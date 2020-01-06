@@ -34,11 +34,11 @@ _unit-tests: &unit-tests
 
 ### e2e tests avec Cypress
 _functional-tests: &functional-tests
- os: linux
- sudo: required
- services: docker
- script:
-   - ls -la
+  os: linux
+  sudo: required
+  services: docker
+  script:
+    - ls -la
 
 
 ### Deploy sur dockerhub
