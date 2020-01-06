@@ -55,13 +55,13 @@ _docker-image-deploy: &docker-image-deploy
 
 jobs:
   include:
-    - <<: *back-lint
-      stage: back-lint
-      name: back-lint
+    - <<: *lint-back
+      stage: lint-back
+      name: lint-back
 
-    - <<: *front-lint
-      stage: front-lint
-      name: front-lint
+    - <<: *lint-front
+      stage: lint-front
+      name: lint-front
 
     - <<: *unit-tests
       stage: Unit tests
