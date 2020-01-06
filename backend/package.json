@@ -1,0 +1,22 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "backend deps",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.19.0",
+    "eslint": "^6.8.0",
+    "express": "^4.17.1",
+    "express-swagger-generator": "^1.1.15",
+    "https": "^1.0.0",
+    "lodash": "^4.17.15",
+    "mocha": "^7.0.0",
+    "pg": "^7.17.0",
+    "sinon": "^8.0.2"
+  }
+}

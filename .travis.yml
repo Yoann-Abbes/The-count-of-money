@@ -1,0 +1,70 @@
+### linter back
+_lint-back: &lint-back
+  os: linux
+  sudo: required
+  services: docker
+  cache:
+  script:
+    - ls -la
+
+### linter front
+_lint-front: &lint-front
+  os: linux
+  sudo: required
+  services: docker
+  cache:
+  script:
+    - ls -la
+
+### unit tests avec Mocha
+_unit-tests: &unit-tests
+  os: linux
+  sudo: required
+  services: docker
+  cache:
+  script:
+    - ls -la
+
+
+### e2e tests avec Cypress
+_end-to-end-tests: &end-to-end-tests
+  os: linux
+  sudo: required
+  services: docker
+  script:
+    - ls -la
+
+
+### Deploy sur dockerhub
+# _docker-image-deploy: &docker-image-deploy
+#   stage: Deployments images docker
+#   language: minimal
+#   services: docker
+#   if: type=push AND branch=master
+#   script:
+#     - cd backend
+#     - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+#     - docker build . -t $IMAGE_NAME
+#     - docker push $IMAGE_NAME:latest
+
+jobs:
+  include:
+    - <<: *lint-back
+      stage: lint-back
+      name: lint-back
+
+    - <<: *lint-front
+      stage: lint-front
+      name: lint-front
+
+    - <<: *unit-tests
+      stage: Unit tests
+      name: Unit Tests
+
+    - <<: *end-to-end-tests
+      stage: end-to-end tests
+      name: end-to-end tests
+
+    # - <<: *docker-image-deploy
+    #   stage: Deployment images docker
+    #   name: Deployment images docker
