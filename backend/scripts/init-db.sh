@@ -1,0 +1,1 @@
+psql -h localhost -U postgres -f db_sample.sql
