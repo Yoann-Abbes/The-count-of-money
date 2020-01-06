@@ -1,0 +1,76 @@
+### linter back
+_lint-back: &lint-back
+  os: linux
+  sudo: required
+  services: docker
+  cache:
+  install:
+    - sudo sysctl -w vm.max_map_count=262144
+  script:
+    #### A DEFINIR
+
+### linter front
+_lint-front: &lint-front
+  os: linux
+  sudo: required
+  services: docker
+  cache:
+  install:
+    - sudo sysctl -w vm.max_map_count=262144
+  script:
+    #### A DEFINIR
+
+### unit tests avec Mocha
+_unit-tests: &unit-tests
+  os: linux
+  sudo: required
+  services: docker
+  cache:
+  install:
+    - sudo sysctl -w vm.max_map_count=262144
+  script:
+    #### A DEFINIR
+
+
+### e2e tests avec Cypress
+#_functional-tests: &functional-tests
+#  os: linux
+#  sudo: required
+#  services: docker
+#  script:
+#    #### A DEFINIR
+
+
+### Deploy sur dockerhub
+_docker-image-deploy: &docker-image-deploy
+  stage: Deployments images docker
+  language: minimal
+  services: docker
+  if: type=push AND branch=master
+  script:
+    - cd backend
+    - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+    - docker build . -t $IMAGE_NAME
+    - docker push $IMAGE_NAME:latest
+
+jobs:
+  include:
+    - <<: *back-lint
+      stage: back-lint
+      name: back-lint
+
+    - <<: *front-lint
+      stage: front-lint
+      name: front-lint
+
+    - <<: *unit-tests
+      stage: Unit tests
+      name: Unit Tests
+
+    - <<: *e2e-tests
+      stage: e2e tests
+      name: e2e tests
+
+    - <<: *docker-image-deploy
+      stage: Deployments images docker
+      name: Deployment% images docker
