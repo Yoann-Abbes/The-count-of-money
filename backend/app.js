@@ -1,15 +1,24 @@
+var express = require('express');
+var path = require('path');
+var cookieParser = require('cookie-parser');
+var logger = require('morgan');
 
-const express = require('express')
-const app = express()
-const port = 3040
+var indexRouter = require('./routes/index');
+var userRouter = require('./routes/user');
+var adminRouter = require('./routes/admin');
 
-app.get('/', function (req, res) {
-  res.json({
-    test: 'Hello World!'
-  })
-})
+var app = express();
 
-app.listen(port, function () {
-  console.log('Example app listening on port ' + port + '!')
-})
+app.use(logger('dev'));
+app.use(express.json());
+app.use(express.urlencoded({
+    extended: false
+}));
+app.use(cookieParser());
+app.use(express.static(path.join(__dirname, 'public')));
 
+app.use('/', indexRouter);
+app.use('/user', userRouter);
+app.use('/admin', adminRouter);
+
+module.exports = app;
