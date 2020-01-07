@@ -1,52 +1,24 @@
-<<<<<<< HEAD
-=======
+var express = require('express');
+var path = require('path');
+var cookieParser = require('cookie-parser');
+var logger = require('morgan');
 
->>>>>>> 1-dev
-const express = require('express')
-const app = express()
-const port = 3040
+var indexRouter = require('./routes/index');
+var userRouter = require('./routes/user');
+var adminRouter = require('./routes/admin');
 
-<<<<<<< HEAD
-const { Pool, Client } = require('pg')
+var app = express();
 
-const client = new Client({
-    user: 'api_user',
-    host: '127.0.0.1',
-    database: 'crytpodb',
-    password: 'password',
-    port: 5432,
-})
-client.connect()
+app.use(logger('dev'));
+app.use(express.json());
+app.use(express.urlencoded({
+    extended: false
+}));
+app.use(cookieParser());
+app.use(express.static(path.join(__dirname, 'public')));
 
-client.query('select * from history', (err, res) => {
-    console.log(err, res.rows)
-    client.end()
-})
+app.use('/', indexRouter);
+app.use('/user', userRouter);
+app.use('/admin', adminRouter);
 
-app.get('/', function (req, res) {
-    // client.query('select * from books', (err, ress) => {
-    //     console.log(err, ress)
-    //     // client.end()
-    //     res.send(ress)
-    // })
-    
-    // res.json({
-    //     test: 'Hello World!'
-    // })
-})
-
-app.listen(port, function () {
-    console.log('Example app listening on port ' + port + '!')
-})
-=======
-app.get('/', function (req, res) {
-  res.json({
-    test: 'Hello World!'
-  })
-})
-
-app.listen(port, function () {
-  console.log('Example app listening on port ' + port + '!')
-})
-
->>>>>>> 1-dev
+module.exports = app;
