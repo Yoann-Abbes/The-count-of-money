@@ -1,15 +1,13 @@
 <template>
-  <div>
-
-  </div>
+  <div />
 </template>
 
 <script>
 export default {
-
+  name: 'RSS'
 }
 </script>
 
-<style>
+<style scoped>
 
 </style>
