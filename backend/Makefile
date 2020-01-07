@@ -5,7 +5,10 @@
 init:
 	npm install
 
+startDebug:
+	DEBUG=backend:* npm start
+
 start:
-	node app.js
+	npm start
 
 all: init start
