@@ -9,3 +9,8 @@
 
 # init and start project
 - make all
+
+
+# Connect postgres
+sudo su - postgres
+psql
