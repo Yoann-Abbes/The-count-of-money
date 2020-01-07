@@ -9,8 +9,11 @@
 
 # init and start project
 - make all
+<<<<<<< HEAD
 
 
 # Connect postgres
 sudo su - postgres
 psql
+=======
+>>>>>>> 1-dev

@@ -1,7 +1,12 @@
+<<<<<<< HEAD
+=======
+
+>>>>>>> 1-dev
 const express = require('express')
 const app = express()
 const port = 3040
 
+<<<<<<< HEAD
 const { Pool, Client } = require('pg')
 
 const client = new Client({
@@ -33,3 +38,15 @@ app.get('/', function (req, res) {
 app.listen(port, function () {
     console.log('Example app listening on port ' + port + '!')
 })
+=======
+app.get('/', function (req, res) {
+  res.json({
+    test: 'Hello World!'
+  })
+})
+
+app.listen(port, function () {
+  console.log('Example app listening on port ' + port + '!')
+})
+
+>>>>>>> 1-dev

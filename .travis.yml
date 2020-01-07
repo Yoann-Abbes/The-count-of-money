@@ -4,10 +4,8 @@ _lint-back: &lint-back
   sudo: required
   services: docker
   cache:
-  install:
-    - sudo sysctl -w vm.max_map_count=262144
   script:
-    #### A DEFINIR
+    - ls -la
 
 ### linter front
 _lint-front: &lint-front
@@ -15,10 +13,8 @@ _lint-front: &lint-front
   sudo: required
   services: docker
   cache:
-  install:
-    - sudo sysctl -w vm.max_map_count=262144
   script:
-    #### A DEFINIR
+    - ls -la
 
 ### unit tests avec Mocha
 _unit-tests: &unit-tests
@@ -26,51 +22,49 @@ _unit-tests: &unit-tests
   sudo: required
   services: docker
   cache:
-  install:
-    - sudo sysctl -w vm.max_map_count=262144
   script:
-    #### A DEFINIR
+    - ls -la
 
 
 ### e2e tests avec Cypress
-#_functional-tests: &functional-tests
-#  os: linux
-#  sudo: required
-#  services: docker
-#  script:
-#    #### A DEFINIR
+_end-to-end-tests: &end-to-end-tests
+  os: linux
+  sudo: required
+  services: docker
+  script:
+    - ls -la
 
 
 ### Deploy sur dockerhub
-_docker-image-deploy: &docker-image-deploy
-  stage: Deployments images docker
-  language: minimal
-  services: docker
-  if: type=push AND branch=master
-  script:
-    - cd backend
-    - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-    - docker build . -t $IMAGE_NAME
-    - docker push $IMAGE_NAME:latest
+# _docker-image-deploy: &docker-image-deploy
+#   stage: Deployments images docker
+#   language: minimal
+#   services: docker
+#   if: type=push AND branch=master
+#   script:
+#     - cd backend
+#     - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+#     - docker build . -t $IMAGE_NAME
+#     - docker push $IMAGE_NAME:latest
 
 jobs:
   include:
-    - <<: *back-lint
-      stage: back-lint
-      name: back-lint
+    - <<: *lint-back
+      stage: lint-back
+      name: lint-back
 
-    - <<: *front-lint
-      stage: front-lint
-      name: front-lint
+    - <<: *lint-front
+      stage: lint-front
+      name: lint-front
 
     - <<: *unit-tests
       stage: Unit tests
       name: Unit Tests
 
-    - <<: *e2e-tests
-      stage: e2e tests
-      name: e2e tests
+    - <<: *end-to-end-tests
+      stage: end-to-end tests
+      name: end-to-end tests
 
-    - <<: *docker-image-deploy
-      stage: Deployments images docker
-      name: Deployment% images docker
+    # - <<: *docker-image-deploy
+    #   stage: Deployment images docker
+    #   name: Deployment images docker
