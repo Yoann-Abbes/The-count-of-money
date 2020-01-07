@@ -12,11 +12,13 @@ export default {
   components: {
     Chart
   },
-  mounted () {
+  created () {
     this.$store.commit('SET_LOADING')
+  },
+  mounted () {
     setTimeout(() => {
       this.$store.commit('UNSET_LOADING')
-    }, 2000)
+    }, 500)
   }
 }
 </script>

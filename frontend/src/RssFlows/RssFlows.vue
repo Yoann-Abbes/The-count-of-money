@@ -1,18 +1,18 @@
 <template>
-  <v-container fluid>
+  <v-container fluid dark>
     <v-row>
-      <v-col cols="12" align="center" justify="center">
-        <p class="display-3">RSS FEEDS</p>
+      <v-col cols="12" align="center" justify="center" dark>
+        <p :class="`display-3 ${getDarkMode? 'white' : 'black'}--text `">RSS FEEDS</p>
       </v-col>
     </v-row>
     <v-row>
       <v-col cols="12">
-        <v-text-field v-model="searchString" label="Type something to search..."></v-text-field>
+        <v-text-field :dark="getDarkMode" v-model="searchString" label="Type something to search..."></v-text-field>
       </v-col>
     </v-row>
     <v-row>
       <v-col cols="6" v-for="feed in Object.keys(filteredFeeds)" :key="feed">
-        <v-card>
+        <v-card :dark="getDarkMode">
           <v-card-title>{{filteredFeeds[feed].title}}</v-card-title>
           <v-card-text>
             <v-expansion-panels hover popout>
@@ -27,7 +27,7 @@
                 </v-expansion-panel-header>
                 <v-expansion-panel-content>
                   <v-container fluid>
-                    <v-row>{{item.content}}</v-row>
+                    <v-row v-html="item.content"></v-row>
                     <v-row>
                       <v-col cols="4">{{item.creator}}</v-col>
                       <v-spacer />
@@ -46,6 +46,7 @@
 
 <script>
 import Vue from 'vue'
+import { mapGetters } from 'vuex'
 
 export default {
   data () {
@@ -78,9 +79,12 @@ export default {
     }
   },
   async mounted () {
+    this.$store.commit('SET_LOADING')
     await this.getFeeds()
+    this.$store.commit('UNSET_LOADING')
   },
   computed: {
+    ...mapGetters(['getDarkMode']),
     filteredFeeds () {
       if (
         !this.searchString ||
@@ -117,9 +121,7 @@ export default {
           await parser.parseURL(CORS_PROXY + rss.url, async (err, feed) => {
             if (err) throw err
             for (const item of feed.items) {
-              item.content = item.content
-                .replace(/&#(?:[^;]*);/g, ' ')
-                .replace('[ ]', '[...]')
+              item.content = item.content.replace('[ ]', '[...]')
             }
             Vue.set(this.rssFeeds, rss.name, feed)
           })

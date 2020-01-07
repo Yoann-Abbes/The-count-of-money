@@ -1,5 +1,5 @@
 <template>
-  <v-app-bar app color="secondary" dark>
+  <v-app-bar app dark>
     <div class="d-flex align-center">
       <v-img
         alt="BITSOFCOIN"
@@ -26,3 +26,13 @@
     <template v-if="$vuetify.breakpoint.smAndUp"></template>
   </v-app-bar>
 </template>
+
+<script>
+import { mapGetters } from 'vuex'
+
+export default {
+  computed: {
+    ...mapGetters(['getDarkMode'])
+  }
+}
+</script>
