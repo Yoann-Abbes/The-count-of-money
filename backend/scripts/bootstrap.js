@@ -7,6 +7,7 @@ const argv = require('yargs')
     .default('host', 'localhost')
     .default('database', 'money')
     .default('password', 'postgres')
+    .default('api_key', process.env.API_KEY)
     .default('port', '5432').argv;
 
 const client = new Client({
@@ -17,13 +18,11 @@ const client = new Client({
     port: argv.port
 })
 
-
-
 client.connect()
 
 const cryptos = ['BTC', 'ETH', 'XRP', 'LTC', 'BCH', 'USDT', 'EOS', 'BNB', 'BSV', 'TRX']
 const symbol = 'EUR'
-const api_key = 'd9a6b09f786d982185dbd38590dca29de06be1e5239482bbba0b249241948838';
+const api_key = argv.api_key;
 
 // GET ALL CRYPTOS INFOS
 const getCryptoList = async () => {
