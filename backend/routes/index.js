@@ -30,32 +30,29 @@ router.get('/', function (req, res, next) {
         .catch(e => console.error(e.stack))
 });
 
-router.ws('/ws', function (ws, req) {
-    console.log("Server: opening ws");
-    // ws.send(JSON.stringify({
-    //     name: "bitcoin",
-    //     n: "BTC"
-    // }));
+const clients = new Set();
 
-    ws.on('message', function (msg) {
-        console.log(expressWs.getWss().clients)
-        console.log(expressWs.getWss("/ws").clients.forEach)
-        expressWs.getWss().clients.forEach(function each(client) {
-            if (client.readyState === WebSocket.OPEN) {
-                client.send(JSON.stringify({
-                    name: "bitcoin",
-                    n: "BTC"
-                }));
-            }
-        });
+router.ws('/getCurrency', function (ws, req) {
+    console.log();
+    
+    clients.add(ws);
+    ws.on('close', () => {
+        clients.delete(ws)
+    });
 
-
-        // console.log("server")
-        // ws.send(JSON.stringify({
-        //     name: "bitcoin",
-        //     n: "BTC"
-        // }));
+    ws.on('message', (msg) => {
+        console.log('lol');
     });
 });
+
+router.ws('/refreshCurrency', function (ws, req) {
+    ws.on('message', (msg) => {
+        console.log('lol');
+        clients.forEach(function each(client) {
+            client.send(msg);
+        });
+    });
+});
+
 
 module.exports = router;
