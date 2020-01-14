@@ -11,4 +11,7 @@ startDebug:
 start:
 	npm start
 
+tests:
+	npm test
+
 all: init start
