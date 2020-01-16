@@ -12,7 +12,7 @@ const swaggerOptions = {
             servers: ["http://" + process.env.DB_HOST + ":" + process.env.SERVER_PORT]
         }
     },
-    apis: ['./routes/index.js', './routes/user.js'],
+    apis: ['./docs/*.yaml'],
 };
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
