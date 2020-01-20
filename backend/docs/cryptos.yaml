@@ -1,0 +1,198 @@
+tags:
+ name: Cryptos
+ description: Crypto-currencies management
+
+paths:
+ /cryptos[?cmids={cm}]:
+   get:
+     summary: Create a new user
+     tags: [Cryptos]
+     requestBody:
+       required: true
+     responses:
+       "200":
+         description: Valid user created
+       "400":
+         description: Invalid user created
+     parameters:
+       - in: path
+         name: cmids
+         description: Cryptocurrencies' ids.
+         required: true
+         type: integer
+       - in: query
+         name: name
+         description: Full name if the cryptocurrency.
+         required: true
+         type: string
+       - in: query
+         name: current_price
+         description: Current price.
+         required: true
+         type: float
+       - in: query
+         name: opening_price
+         description: Opening price.
+         required: true
+         type: float
+       - in: query
+         name: lowest_price
+         description: Lowest price of the day
+         required: true
+         type: float
+       - in: query
+         name: highest_price
+         description: Highest price of the day.
+         required: true
+         type: float
+       - in: query
+         name: url
+         description: URL of the corresponding image of the cryptocurrency.
+         required: true
+         type: string
+ /cryptos/{cmid}:
+   get:
+     summary: Get cryptocurrency by id.
+     tags: [Cryptos]
+     requestBody:
+       required: false
+     responses:
+       "200":
+         description: Valid cryptocurrency
+       "400":
+         description: Invalid cryptocurrency
+     parameters:
+       - in: path
+         name: cmid
+         description: Cryptocurrency id.
+         required: true
+         type: integer
+ /cryptos/{cmid}/history/{period}:
+   get:
+     summary: Provides the price history of a cryptocurrency for each period.
+     tags: [Cryptos]
+     requestBody:
+       required: false
+     responses:
+       "200":
+         description: Valid cryptocurrency
+       "400":
+         description: Invalid cryptocurrency
+     parameters:
+       - in: path
+         name: cmid
+         description: Cryptocurrency id.
+         required: true
+         type: integer
+       - in: query
+         name: period
+         description: Period details.
+         required: true
+         type: datetime
+ /cryptos:
+   post:
+     summary: Add a cryptocurrency to the platform.
+     tags: [Cryptos]
+     requestBody:
+       required: true
+     responses:
+       "200":
+         description: Cryptocurrency created.
+       "400":
+         description: Impossible to create cryptocurrency.
+     parameters:
+       - in: query
+         name: name
+         description: Full name if the cryptocurrency.
+         required: true
+         type: string
+       - in: query
+         name: current_price
+         description: Current price.
+         required: true
+         type: float
+       - in: query
+         name: opening_price
+         description: Opening price.
+         required: true
+         type: float
+       - in: query
+         name: lowest_price
+         description: Lowest price of the day
+         required: true
+         type: float
+       - in: query
+         name: highest_price
+         description: Highest price of the day.
+         required: true
+         type: float
+       - in: query
+         name: url
+         description: URL of the corresponding image of the cryptocurrency.
+         required: true
+         type: string
+path:
+ /cryptos/{cmid}:
+   delete:
+     summary: Delete a cryptocurrency.
+     tags: [Cryptos]
+     requestBody:
+       required: true
+     responses:
+       "200":
+         description: Cryptocurrency deleted.
+       "400":
+         description: Impossible to delete cryptocurrency.
+     parameters:
+       - in: path
+         name: cmid
+         description: Cryptocurrency id.
+         required: true
+         type: integer
+ /cryptos[?cmids={cm}]:
+   put:
+     summary: Modification of a cryptocurrency to the platform.
+     tags: [Cryptos]
+     requestBody:
+       required: true
+     responses:
+       "200":
+         description: Cryptocurrency modified.
+       "400":
+         description: Impossible to modify cryptocurrency.
+     parameters:
+       - in: path
+         name: cmids
+         description: Id of a cryptocurrency.
+         required: true
+         type: integer
+       - in: query
+         name: name
+         description: Full name if the cryptocurrency.
+         required: true
+         type: string
+       - in: query
+         name: current_price
+         description: Current price.
+         required: true
+         type: float
+       - in: query
+         name: opening_price
+         description: Opening price.
+         required: true
+         type: float
+       - in: query
+         name: lowest_price
+         description: Lowest price of the day
+         required: true
+         type: float
+       - in: query
+         name: highest_price
+         description: Highest price of the day.
+         required: true
+         type: float
+       - in: query
+         name: url
+         description: URL of the corresponding image of the cryptocurrency.
+         required: true
+         type: string

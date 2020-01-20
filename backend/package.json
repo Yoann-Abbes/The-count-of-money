@@ -12,13 +12,17 @@
     "dotenv": "^8.2.0",
     "eslint": "^6.8.0",
     "express": "^4.17.1",
-    "express-swagger-generator": "^1.1.15",
     "https": "^1.0.0",
     "lodash": "^4.17.15",
     "mocha": "^7.0.0",
     "morgan": "~1.9.1",
     "pg": "^7.17.0",
     "sinon": "^8.0.2",
+    "swagger-jsdoc": "^3.5.0",
+    "swagger-ui-express": "^4.1.2"
+  },
+  "devDependencies": {
+    "express-swagger-generator": "^1.1.17"
     "yargs": "^15.1.0"
   }
 }
