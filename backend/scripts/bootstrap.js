@@ -96,7 +96,7 @@ const getCryptosHours = async () => {
 const getCryptosMinuts = async () => {
     let query = 'INSERT INTO crypto_history (crypto_id, period, timestamp, open, high, low, close) VALUES \n';
     for (const [index, crypto] of cryptos.entries()) {
-        const url = `https://min-api.cryptocompare.com/data/v2/histominute?fsym=${crypto}&tsym=${symbol}&limit=60&api_key=${api_key}`;
+        const url = `https://min-api.cryptocompare.com/data/v2/histominute?fsym=${crypto}&tsym=${symbol}&limit=120&api_key=${api_key}`;
         await axios.get(url)
             .then(response => {
                 const minuts = response.data.Data.Data;
