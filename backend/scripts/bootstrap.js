@@ -54,7 +54,7 @@ const getCryptosDays = async () => {
             .then(response => {
                 const days = response.data.Data.Data;
                 for (const day of days) {
-                    query += `('${index + 1}', 'days', to_timestamp(${day.time}), '${day.open}', '${day.high}', '${day.low}', '${day.close}'),\n`
+                    query += `('${index + 1}', 'daily', to_timestamp(${day.time}), '${day.open}', '${day.high}', '${day.low}', '${day.close}'),\n`
                 }
 
             })
@@ -78,7 +78,7 @@ const getCryptosHours = async () => {
                 const hours = response.data.Data.Data;
                 for (const hour of hours) {
                     date = new Date(hour.time)
-                    query += `('${index + 1}', 'hours', to_timestamp(${hour.time}), '${hour.open}', '${hour.high}', '${hour.low}', '${hour.close}'),\n`
+                    query += `('${index + 1}', 'hourly', to_timestamp(${hour.time}), '${hour.open}', '${hour.high}', '${hour.low}', '${hour.close}'),\n`
                 }
 
             })
@@ -101,7 +101,7 @@ const getCryptosMinuts = async () => {
             .then(response => {
                 const minuts = response.data.Data.Data;
                 for (const minut of minuts) {
-                    query += `('${index + 1}', 'minuts', to_timestamp(${minut.time}), '${minut.open}', '${minut.high}', '${minut.low}', '${minut.close}'),\n`
+                    query += `('${index + 1}', 'minute', to_timestamp(${minut.time}), '${minut.open}', '${minut.high}', '${minut.low}', '${minut.close}'),\n`
                 }
             })
     }
