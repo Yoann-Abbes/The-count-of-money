@@ -6,6 +6,7 @@ var logger = require('morgan');
 var indexRouter = require('./routes/index');
 var userRouter = require('./routes/user');
 var adminRouter = require('./routes/admin');
+const swaggerDoc = require('./swaggerDoc');
 
 var app = express();
 
@@ -20,5 +21,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/user', userRouter);
 app.use('/admin', adminRouter);
+swaggerDoc(app);
 
 module.exports = app;

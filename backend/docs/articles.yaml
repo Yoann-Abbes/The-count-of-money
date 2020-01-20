@@ -1,0 +1,40 @@
+tags:
+ name: Articles
+ description: Articles management
+
+paths:
+ /articles[?params1=value1&...]:
+   get:
+     summary: Recovering of an article
+     tags: [Articles]
+     requestBody:
+       required: true
+     responses:
+       "200":
+         description: Valid article recovered
+       "400":
+         description: Invalid article recovered
+     parameters:
+      - in: path
+        name: params
+        description: free parameters.
+        required: false
+        type: free
+ /articles/{id}:
+   get:
+     summary: Recovering of an article
+     tags: [Articles]
+     requestBody:
+       required: true
+     responses:
+       "200":
+         description: Valid article recovered
+       "400":
+         description: Invalid article recovered
+     parameters:
+       - in: query
+         name: id
+         description: Id of an article.
+         required: true
+         type: integer
+     

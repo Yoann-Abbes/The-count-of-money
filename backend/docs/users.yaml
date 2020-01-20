@@ -1,0 +1,158 @@
+tags:
+ name: Users
+ description: User management
+
+paths:
+ /users/register:
+   post:
+     summary: Create a new user
+     tags: [Users]
+     requestBody:
+       required: true
+     responses:
+       "200":
+         description: Valid user created
+       "400":
+         description: Invalid user created
+     parameters:
+       - in: query
+         name: email
+         description: One email address.
+         required: true
+         type: string
+       - in: query
+         name: password
+         description: One appropriate password.
+         required: true
+         type: string
+       - in: query
+         name: isAdmin
+         description: Boolean allow to define if the user is administrator or not.
+         type: boolean
+         required: true
+       - in: query
+         name: picture_url
+         description: url of the profile picture for the user.
+         required: true
+         type: string
+       - in: query
+         name: favorites_crypto
+         description: array of the favorites crypto money for the user.
+         required: true
+         type: array
+         items:
+           type: integer
+ /users/logout:
+   post:
+     summary: The user disconnects.
+     tags: [Users]
+     requestBody:
+       required: false
+     responses:
+       "200":
+         description: User session completed.
+       "400":
+         description: Impossible to close the session.
+ /users/login:
+   get:
+     summary: User authentification
+     tags: [Users]
+     requestBody:
+       required: true
+     responses:
+       "200":
+         description: User authentified.
+       "400":
+         description: Invalid user authentification
+     parameters:
+       - in: query
+         name: email
+         description: Email address as username for authentification.
+         required: true
+         type: string
+       - in: query
+         name: password
+         description: Valid password for authentification.
+         required: true
+         type: string
+ /users/auth/{provider}:
+   get:
+     summary: Oauth2 authentification.
+     tags: [Users]
+     requestBody:
+       required: true
+     responses:
+       "200":
+         description: User authentified.
+       "400":
+         description: Invalid user authentification
+     parameters:
+       - in: path
+         name: provider
+         description: Authentification by Oauth2 credentials.
+         required: true
+ /users/auth/{provider}/callback:
+   get:
+     summary: Validation of Oauth2 authentification.
+     tags: [Users]
+     requestBody:
+       required: true
+     responses:
+       "200":
+         description: User authentification validate.
+       "400":
+         description: Invalid user authentification.
+     parameters:
+       - in: path
+         name: provider
+         description: Authentification by Oauth2 credentials.
+         required: true
+ /users/profile:
+   get:
+     summary: Retrieving profile informations.
+     tags: [Users]
+     requestBody:
+       required: false
+     responses:
+       "200":
+         description: User informations.
+       "400":
+         description: Cannot access to this profile informations.
+
+path:
+ /users/profile:
+   put:
+     summary: Update profil information.
+     tags: [Users]
+     requestBody:
+       required: true
+     responses:
+       "200":
+         description: User informations changed.
+       "400":
+         description: Invalid user for updates.
+     parameters:
+       - in: query
+         name: email
+         description: One email address.
+         required: true
+         type: string
+       - in: query
+         name: currency
+         description: default currency for the price of crypto-currencies
+         required: true
+         type: string
+       - in: query
+         name: list_cryptoCurrencies
+         description: list of crypto-currencies
+         required: true
+         type: array
+         items:
+           type: integer
+       - in: query
+         name: list_keywords
+         description: list of keywords
+         required: true
+         type: array
+         items:
+           type: string
