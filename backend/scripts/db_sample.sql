@@ -11,14 +11,18 @@ CREATE TABLE RSS_LIST (
 DROP TABLE IF EXISTS CRYPTO_LIST CASCADE;
 CREATE TABLE CRYPTO_LIST (
     id serial PRIMARY KEY,
-    name VARCHAR(500)
+    symbol VARCHAR(6),
+    fullName VARCHAR(500),
+    picture_url TEXT
 );
 
 DROP TABLE IF EXISTS CRYPTO_HISTORY CASCADE;
 CREATE TABLE CRYPTO_HISTORY (
     id serial PRIMARY KEY,
     crypto_id BIGINT NOT NULL,
+    period VARCHAR(10),
     timestamp TIMESTAMP,
+    price FLOAT,
     open FLOAT,
     high FLOAT,
     low FLOAT,
@@ -39,35 +43,35 @@ CREATE TABLE USERS (
     favorites_crypto BIGINT []
 );
 
-INSERT INTO CRYPTO_LIST VALUES (
-    nextval('crypto_list_id_seq'),
-    'bitcoin'
-);
+-- INSERT INTO CRYPTO_LIST VALUES (
+--     nextval('crypto_list_id_seq'),
+--     'bitcoin'
+-- );
 
-INSERT INTO CRYPTO_LIST VALUES (
-    nextval('crypto_list_id_seq'),
-    'etherum'
-);
+-- INSERT INTO CRYPTO_LIST VALUES (
+--     nextval('crypto_list_id_seq'),
+--     'etherum'
+-- );
 
-INSERT INTO CRYPTO_HISTORY VALUES (
-    nextval('crypto_history_id_seq'),
-    1,
-    '2016-06-22 19:10:25-07',
-    425235,
-    645646,
-    41985298,
-    5252895
-);
+-- INSERT INTO CRYPTO_HISTORY VALUES (
+--     nextval('crypto_history_id_seq'),
+--     1,
+--     '2016-06-22 19:10:25-07',
+--     425235,
+--     645646,
+--     41985298,
+--     5252895
+-- );
 
-INSERT INTO CRYPTO_HISTORY VALUES (
-    nextval('crypto_history_id_seq'),
-    2,
-    '2016-06-22 19:10:25-07',
-    87765,
-    09876,
-    12457689,
-    6565678
-);
+-- INSERT INTO CRYPTO_HISTORY VALUES (
+--     nextval('crypto_history_id_seq'),
+--     2,
+--     '2016-06-22 19:10:25-07',
+--     87765,
+--     09876,
+--     12457689,
+--     6565678
+-- );
 
 INSERT INTO USERS VALUES (
     nextval('users_id_seq'),

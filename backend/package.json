@@ -24,5 +24,6 @@
   },
   "devDependencies": {
     "express-swagger-generator": "^1.1.17"
+    "yargs": "^15.1.0"
   }
 }
