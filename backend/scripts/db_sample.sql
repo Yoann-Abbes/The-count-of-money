@@ -9,23 +9,30 @@ CREATE TABLE RSS_LIST (
 );
 DROP TABLE IF EXISTS CRYPTO_LIST CASCADE;
 CREATE TABLE CRYPTO_LIST (
+<<<<<<< HEAD
  id serial PRIMARY KEY,
  symbol VARCHAR(6),
  fullName VARCHAR(500),
  picture_url TEXT
+=======
+    id serial PRIMARY KEY,
+    symbol VARCHAR(6),
+    fullName VARCHAR(500),
+    picture_url TEXT
+>>>>>>> 426be01c605120b5be9b3cdf264bc1b21608811a
 );
 DROP TABLE IF EXISTS CRYPTO_HISTORY CASCADE;
 CREATE TABLE CRYPTO_HISTORY (
- id serial PRIMARY KEY,
- crypto_id BIGINT NOT NULL,
- period VARCHAR(10),
- timestamp TIMESTAMP,
- price FLOAT,
- open FLOAT,
- high FLOAT,
- low FLOAT,
- close FLOAT,
- FOREIGN KEY (crypto_id) REFERENCES CRYPTO_LIST
+    id serial PRIMARY KEY,
+    crypto_id BIGINT NOT NULL,
+    period VARCHAR(10),
+    timestamp TIMESTAMP,
+    price FLOAT,
+    open FLOAT,
+    high FLOAT,
+    low FLOAT,
+    close FLOAT,
+    FOREIGN KEY (crypto_id) REFERENCES CRYPTO_LIST
 );
 SET timezone = 'America/Los_Angeles';
 DROP TABLE IF EXISTS USERS CASCADE;
@@ -39,36 +46,37 @@ CREATE TABLE USERS (
  keyword VARCHAR(500) [],
  favorites_crypto BIGINT []
 );
-INSERT INTO CRYPTO_LIST VALUES (
-nextval('crypto_list_id_seq'),
-'BTC', 'BitCoin', '/url/picture'
-);
-INSERT INTO CRYPTO_LIST VALUES (
-nextval('crypto_list_id_seq'),
-'ETC', 'Eterum', '/url/picture2'
-);
+
 -- INSERT INTO CRYPTO_LIST VALUES (
--- nextval('crypto_list_id_seq'),
--- 'etherum'
+--     nextval('crypto_list_id_seq'),
+--     'bitcoin'
 -- );
+
+-- INSERT INTO CRYPTO_LIST VALUES (
+--     nextval('crypto_list_id_seq'),
+--     'etherum'
+-- );
+
 -- INSERT INTO CRYPTO_HISTORY VALUES (
--- nextval('crypto_history_id_seq'),
--- 1,
--- '2016-06-22 19:10:25-07',
--- 425235,
--- 645646,
--- 41985298,
--- 5252895
+--     nextval('crypto_history_id_seq'),
+--     1,
+--     '2016-06-22 19:10:25-07',
+--     425235,
+--     645646,
+--     41985298,
+--     5252895
 -- );
+
 -- INSERT INTO CRYPTO_HISTORY VALUES (
--- nextval('crypto_history_id_seq'),
--- 2,
--- '2016-06-22 19:10:25-07',
--- 87765,
--- 09876,
--- 12457689,
--- 6565678
+--     nextval('crypto_history_id_seq'),
+--     2,
+--     '2016-06-22 19:10:25-07',
+--     87765,
+--     09876,
+--     12457689,
+--     6565678
 -- );
+
 INSERT INTO USERS VALUES (
  nextval('users_id_seq'),
  false,
