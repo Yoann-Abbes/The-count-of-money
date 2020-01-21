@@ -1,5 +1,5 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
 const client = require('../config/clientPg')
 
 function errorQuery(e, res) {
@@ -18,34 +18,34 @@ examples:
     - /cryptos?cmids=BTC,ETH,XRP
 */
 router.get('/cryptos', function (req, res, next) {
-    let query1 = "SELECT * from CRYPTO_LIST",
+    const GET_CRYPTO_LIST = "SELECT * from CRYPTO_LIST",
         values = "";
-    if (req.query.cmids != undefined) {
+    if (req.query && req.query.cmids) {
         const cmids = req.query.cmids.split(",");
         values = `'${cmids[0]}'`
         for (let i = 1; i < cmids.length; i++)
             values += `,'${cmids[i]}'`
-        query1 = `SELECT id,symbol,fullname,picture_url from CRYPTO_LIST WHERE symbol IN (${values})`
+        const GET_CRYPTO_LIST_BY_SYMBOL = `SELECT id,symbol,fullname,picture_url from CRYPTO_LIST WHERE symbol IN (${values})`
     }
     client
-        .query(query1)
-        .then(result1 => {
-            let now = new Date()
+        .query(GET_CRYPTO_LIST_BY_SYMBOL)
+        .then(result => {
+            const now = new Date()
             let a = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 1, 0, 0).getTime() / 1000
-            if (result1.rows.length == 0)
+            if (result.rows.length == 0)
                 res.status(400).json({
                     error: `No crypto matches symbols '${cmids}'`
                 })
             else {
-                let query2 = `SELECT * from CRYPTO_HISTORY WHERE period = 'daily' AND crypto_id IN ( SELECT id FROM CRYPTO_LIST ) AND timestamp = to_timestamp(${a})`
-                if (values != "")
+                const GET_CRYPTO_HISTORY_BY_DAY_AND_ID = `SELECT * from CRYPTO_HISTORY WHERE period = 'daily' AND crypto_id IN ( SELECT id FROM CRYPTO_LIST ) AND timestamp = to_timestamp(${a})`
+                if (values !== "")
                     query2 = `SELECT * from CRYPTO_HISTORY WHERE period = 'daily' AND crypto_id IN ( SELECT id FROM CRYPTO_LIST WHERE symbol IN (${values})) AND timestamp = to_timestamp(${a})`
                 client
                     .query(query2)
                     .then(result2 => {
                         result1.rows.forEach(elem1 => {
                             result2.rows.forEach(elem2 => {
-                                if (elem1.id == elem2.crypto_id) {
+                                if (elem1.id === elem2.crypto_id) {
                                     elem1.openDay = elem2.open
                                     elem1.highDay = elem2.high
                                     elem1.lowDay = elem2.low
@@ -79,7 +79,7 @@ router.get('/cryptos/:cmid', function (req, res, next) {
         .then(result1 => {
             let now = new Date()
             let a = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 1, 0, 0).getTime() / 1000
-            if (result1.rows.length == 0)
+            if (result1.rows.length === 0)
                 res.status(400).json({
                     error: `No crypto matches symbols '${cmid}'`
                 })
@@ -90,7 +90,7 @@ router.get('/cryptos/:cmid', function (req, res, next) {
                     .then(result2 => {
                         result1.rows.forEach(elem1 => {
                             result2.rows.forEach(elem2 => {
-                                if (elem1.id == elem2.crypto_id) {
+                                if (elem1.id === elem2.crypto_id) {
                                     elem1.openDay = elem2.open
                                     elem1.highDay = elem2.high
                                     elem1.lowDay = elem2.low
@@ -126,7 +126,7 @@ router.get('/cryptos/:cmid/history/:period', function (req, res, next) {
         client
             .query(query)
             .then(result => {
-                if (result.rows.length == 0)
+                if (result.rows.length === 0)
                     res.status(400).json({
                         error: `No crypto matches this symbol '${cmid}'`
                     })
@@ -167,7 +167,7 @@ router.post('/cryptos', function (req, res, next) {
     client
         .query(query1)
         .then(result => {
-            if (result.rows.length == 0) {
+            if (result.rows.length === 0) {
                 let query2 = `INSERT INTO CRYPTO_LIST (symbol, fullname, picture_url) VALUES ('${symbol}', '${fullname}', '${picture_url}')`;
                 client
                     .query(query2)
