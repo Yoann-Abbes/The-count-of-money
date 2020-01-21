@@ -41,7 +41,6 @@
             here
           </a>
           </form>
-          <LogInFacebook/>
         </v-card-text>
       </v-card>
     </v-flex>
@@ -49,11 +48,7 @@
 </template>
 
 <script>
-import LogInFacebook from '../LogInFacebook/LogInFacebook.vue'
 export default {
-  components: {
-    LogInFacebook
-  },
   data: function () {
     return {
       email: '',
