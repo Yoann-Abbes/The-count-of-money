@@ -9,26 +9,28 @@ services:
     ports:
       - "5005:5005"
     environment:
-      - DB_USER="postgres"
-      - DB_HOST="0.0.0.0"
-      - DB_DATABASE="money"
-      - DB_PASSWORD="postgres"
+      - DB_USER=$DB_USER
+      - DB_HOST=postgres
+      - DB_DATABASE=money
+      - DB_PASSWORD=$DB_PASSWORD
       - DB_PORT=5432
+
     depends_on:
-        postgresql:
+        postgres:
           condition: "service_healthy"
 
-  postgresql:
+  postgres:
     image: postgres:12.1-alpine
     volumes:
       - ./postgresql-dump:/docker-entrypoint-initdb.d
     ports:
       - "5432:5432"
     environment:
-      - DB_USER="postgres"
-      - DB_PASSWORD="postgres"
+      - DB_USER=$DB_USER
+      - DB_PASSWORD=$DB_PASSWORD
+      - DB_DATABASE=money
     healthcheck:
-      test: "pg_isready -U postgres -h 0.0.0.0 -p 5432"
+      test: "pg_isready -U $DB_USER -h localhost -p 5432"
       interval: 2s
       timeout: 40s
       retries: 20
