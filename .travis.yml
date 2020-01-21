@@ -38,12 +38,11 @@ _end-to-end-tests: &end-to-end-tests
   os: linux
   sudo: required
   cache: npm
-  before_install: cd frontend
   install:
-    - npm ci --silent
+    - npm ci --silent ./frontend
   script:
-    - ../ci/run_front.sh
-    - npm run test
+    - ./ci/run_front.sh
+    - cd frontend && npm run test
 
 
 ### Deploy sur dockerhub
