@@ -32,7 +32,7 @@ router.get('/cryptos', function (req, res, next) {
         .then(result1 => {
             const now = new Date()
             let a = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 1, 0, 0).getTime() / 1000
-            if (result1.rows.length == 0)
+            if (result1.rows.length === 0)
                 res.status(400).json({
                     error: `No crypto matches symbols '${cmids}'`
                 })

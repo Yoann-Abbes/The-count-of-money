@@ -1,7 +1,7 @@
 var express = require('express');
 var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
 
 const cryptoRouter = require('./routes/cryptos');
 const userRouter = require('./routes/users');
