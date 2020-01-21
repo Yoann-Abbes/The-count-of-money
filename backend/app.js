@@ -1,5 +1,5 @@
-var express = require('express');
-var path = require('path');
+let express = require('express');
+let path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 
@@ -8,7 +8,7 @@ const userRouter = require('./routes/users');
 const articlesRouter = require('./routes/articles');
 const swaggerDoc = require('./swaggerDoc');
 
-var app = express();
+let app = express();
 
 app.use(logger('dev'));
 app.use(express.json());
