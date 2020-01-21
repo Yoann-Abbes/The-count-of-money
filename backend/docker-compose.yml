@@ -8,18 +8,27 @@ services:
       - /usr/app/node_modules
     ports:
       - "5005:5005"
+    environment:
+      - DB_USER="postgres"
+      - DB_HOST="0.0.0.0"
+      - DB_DATABASE="money"
+      - DB_PASSWORD="postgres"
+      - DB_PORT=5432
     depends_on:
         postgresql:
           condition: "service_healthy"
 
   postgresql:
-    image: postgres:9.6.2-alpine
+    image: postgres:12.1-alpine
     volumes:
       - ./postgresql-dump:/docker-entrypoint-initdb.d
     ports:
       - "5432:5432"
+    environment:
+      - DB_USER="postgres"
+      - DB_PASSWORD="postgres"
     healthcheck:
-      test: "/usr/bin/postgresql --user=root --password=root --execute \"\\d;\""
+      test: "pg_isready -U postgres -h 0.0.0.0 -p 5432"
       interval: 2s
       timeout: 40s
       retries: 20
