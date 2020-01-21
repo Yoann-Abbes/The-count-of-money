@@ -42,6 +42,7 @@ _end-to-end-tests: &end-to-end-tests
   install:
     - npm ci --silent
   script:
+    - ../ci/run_front.sh
     - npm run test
 
 
