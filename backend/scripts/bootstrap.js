@@ -110,10 +110,10 @@ const getCryptosMinuts = async () => {
     for (const [index, crypto] of SelectedCryptos.entries()) {
         const cryptoMinutsUrl = `https://min-api.cryptocompare.com/data/v2/histominute?fsym=${crypto}&tsym=${Devise}&limit=${NumberOfMinuts}&api_key=${ApiKey}`;
         const cryptoMinutsResponse = await axios.get(cryptoMinutsUrl)
-        const minuts = cryptoMinutsResponse.data.Data.Data;
-        for (const [indexMinut, minut] of minuts.entries()) {
+        const minutes = cryptoMinutsResponse.data.Data.Data;
+        for (const [indexMinut, minute] of minutes.entries()) {
             cryptoMinutsBar.update(indexMinut + index * NumberOfMinuts);
-            cryptoMinutsQuery += `('${index + 1}', 'minuts', to_timestamp(${minut.time}), '${minut.open}', '${minut.high}', '${minut.low}', '${minut.close}'),\n`
+            cryptoMinutsQuery += `('${index + 1}', 'minuts', to_timestamp(${minute.time}), '${minute.open}', '${minute.high}', '${minute.low}', '${minute.close}'),\n`
         }
     }
     cryptoMinutsQuery = cryptoMinutsQuery.slice(0, -2);
@@ -137,9 +137,9 @@ const getCryptosMinuts = async () => {
         await getCryptosHours();
         console.log('Crypto Hours successfully loaded!\n');
 
-        console.log(`Fetching crypto values of last ${NumberOfMinuts} minuts...`);
+        console.log(`Fetching crypto values of last ${NumberOfMinuts} minutes...`);
         await getCryptosMinuts();
-        console.log('Crypto Minuts successfully loaded!');
+        console.log('Crypto Minutes successfully loaded!');
 
     } catch (error) {
         console.log(error.message);
