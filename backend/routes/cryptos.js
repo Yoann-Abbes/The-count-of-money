@@ -21,11 +21,10 @@ router.get('/cryptos', function (req, res, next) {
     let query1 = "SELECT * from CRYPTO_LIST",
         values = "";
     if (req.query.cmids != undefined) {
-        const cmids = req.query.cmids.split(",");
-        values = `'${cmids[0]}'`
-        for (let i = 1; i < cmids.length; i++)
-            values += `,'${cmids[i]}'`
-        query1 = `SELECT id,symbol,fullname,picture_url from CRYPTO_LIST WHERE symbol IN (${values})`
+        const cmids = req.query.cmids.split(",").map((cmid) => {
+            return `'${cmid}'`
+        }).join();
+        query1 = `SELECT id,symbol,fullname,picture_url from CRYPTO_LIST WHERE symbol IN (${cmids})`
     }
     client
         .query(query1)
