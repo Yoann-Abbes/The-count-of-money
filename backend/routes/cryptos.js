@@ -1,5 +1,5 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
 const client = require('../config/clientPg')
 
 function errorQuery(e, res) {
@@ -18,33 +18,34 @@ examples:
     - /cryptos?cmids=BTC,ETH,XRP
 */
 router.get('/cryptos', function (req, res, next) {
-    let query1 = "SELECT * from CRYPTO_LIST",
+    let GET_CRYPTO_LIST = "SELECT * from CRYPTO_LIST",
         values = "";
-    if (req.query.cmids != undefined) {
-        const cmids = req.query.cmids.split(",").map((cmid) => {
-            return `'${cmid}'`
-        }).join();
-        query1 = `SELECT id,symbol,fullname,picture_url from CRYPTO_LIST WHERE symbol IN (${cmids})`
+    if (req.query && req.query.cmids) {
+        const cmids = req.query.cmids.split(",");
+        values = `'${cmids[0]}'`
+        for (let i = 1; i < cmids.length; i++)
+            values += `,'${cmids[i]}'`
+        GET_CRYPTO_LIST = `SELECT id,symbol,fullname,picture_url from CRYPTO_LIST WHERE symbol IN (${values})`
     }
     client
-        .query(query1)
+        .query(GET_CRYPTO_LIST)
         .then(result1 => {
-            let now = new Date()
+            const now = new Date()
             let a = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 1, 0, 0).getTime() / 1000
-            if (result1.rows.length == 0)
+            if (result1.rows.length === 0)
                 res.status(400).json({
                     error: `No crypto matches symbols '${cmids}'`
                 })
             else {
-                let query2 = `SELECT * from CRYPTO_HISTORY WHERE period = 'daily' AND crypto_id IN ( SELECT id FROM CRYPTO_LIST ) AND timestamp = to_timestamp(${a})`
-                if (values != "")
-                    query2 = `SELECT * from CRYPTO_HISTORY WHERE period = 'daily' AND crypto_id IN ( SELECT id FROM CRYPTO_LIST WHERE symbol IN (${values})) AND timestamp = to_timestamp(${a})`
+                let GET_CRYPTO_HISTORY_BY_DAY_AND_ID = `SELECT * from CRYPTO_HISTORY WHERE period = 'daily' AND crypto_id IN ( SELECT id FROM CRYPTO_LIST ) AND timestamp = to_timestamp(${a})`
+                if (values !== "")
+                    GET_CRYPTO_HISTORY_BY_DAY_AND_ID = `SELECT * from CRYPTO_HISTORY WHERE period = 'daily' AND crypto_id IN ( SELECT id FROM CRYPTO_LIST WHERE symbol IN (${values})) AND timestamp = to_timestamp(${a})`
                 client
-                    .query(query2)
+                    .query(GET_CRYPTO_HISTORY_BY_DAY_AND_ID)
                     .then(result2 => {
                         result1.rows.forEach(elem1 => {
                             result2.rows.forEach(elem2 => {
-                                if (elem1.id == elem2.crypto_id) {
+                                if (elem1.id === elem2.crypto_id) {
                                     elem1.openDay = elem2.open
                                     elem1.highDay = elem2.high
                                     elem1.lowDay = elem2.low
@@ -71,25 +72,25 @@ examples:
     - /cryptos/XRP
 */
 router.get('/cryptos/:cmid', function (req, res, next) {
-    let cmid = req.params.cmid,
-        query1 = `SELECT * from CRYPTO_LIST WHERE symbol = '${cmid}'`;
+    const cmid = req.params.cmid,
+        GET_CRYPTO_WHERE_SYMBOL = `SELECT * from CRYPTO_LIST WHERE symbol = '${cmid}'`;
     client
-        .query(query1)
+        .query(GET_CRYPTO_WHERE_SYMBOL)
         .then(result1 => {
             let now = new Date()
             let a = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 1, 0, 0).getTime() / 1000
-            if (result1.rows.length == 0)
+            if (result1.rows.length === 0)
                 res.status(400).json({
                     error: `No crypto matches symbols '${cmid}'`
                 })
             else {
-                let query2 = `SELECT * from CRYPTO_HISTORY WHERE period = 'daily' AND crypto_id IN ( SELECT id FROM CRYPTO_LIST WHERE symbol = '${cmid}' ) AND timestamp = to_timestamp(${a})`
+                let GET_CRYPTO_DAY_INFO_BY_LIST_ID = `SELECT * from CRYPTO_HISTORY WHERE period = 'daily' AND crypto_id IN ( SELECT id FROM CRYPTO_LIST WHERE symbol = '${cmid}' ) AND timestamp = to_timestamp(${a})`
                 client
-                    .query(query2)
+                    .query(GET_CRYPTO_DAY_INFO_BY_LIST_ID)
                     .then(result2 => {
                         result1.rows.forEach(elem1 => {
                             result2.rows.forEach(elem2 => {
-                                if (elem1.id == elem2.crypto_id) {
+                                if (elem1.id === elem2.crypto_id) {
                                     elem1.openDay = elem2.open
                                     elem1.highDay = elem2.high
                                     elem1.lowDay = elem2.low
@@ -121,11 +122,11 @@ router.get('/cryptos/:cmid/history/:period', function (req, res, next) {
         period = req.params.period,
         validPeriod = ['daily', 'hourly', 'minute'];
     if (validPeriod.includes(period)) {
-        let query = `SELECT period,timestamp,open,high,low,close from CRYPTO_HISTORY WHERE period = '${period}' AND crypto_id = ( SELECT id FROM CRYPTO_LIST WHERE symbol = '${cmid}' LIMIT 1 )`
+        let GET_CRYPTO_HISTORY_BY_PERIOD = `SELECT period,timestamp,open,high,low,close from CRYPTO_HISTORY WHERE period = '${period}' AND crypto_id = ( SELECT id FROM CRYPTO_LIST WHERE symbol = '${cmid}' LIMIT 1 )`
         client
-            .query(query)
+            .query(GET_CRYPTO_HISTORY_BY_PERIOD)
             .then(result => {
-                if (result.rows.length == 0)
+                if (result.rows.length === 0)
                     res.status(400).json({
                         error: `No crypto matches this symbol '${cmid}'`
                     })
@@ -162,14 +163,14 @@ router.post('/cryptos', function (req, res, next) {
         }
     });
 
-    let query1 = `SELECT * FROM CRYPTO_LIST WHERE symbol = '${symbol}'`;
+    let GET_CRYPTO_HISTORY_BY_ID = `SELECT * FROM CRYPTO_LIST WHERE symbol = '${symbol}'`;
     client
-        .query(query1)
+        .query(GET_CRYPTO_HISTORY_BY_ID)
         .then(result => {
-            if (result.rows.length == 0) {
-                let query2 = `INSERT INTO CRYPTO_LIST (symbol, fullname, picture_url) VALUES ('${symbol}', '${fullname}', '${picture_url}')`;
+            if (result.rows.length === 0) {
+                let INSERT_NEW_CRYPTO = `INSERT INTO CRYPTO_LIST (symbol, fullname, picture_url) VALUES ('${symbol}', '${fullname}', '${picture_url}')`;
                 client
-                    .query(query2)
+                    .query(INSERT_NEW_CRYPTO)
                     .then(result2 => {
                         res.sendStatus(200)
                     })
@@ -191,13 +192,39 @@ examples:
 */
 router.delete('/cryptos/:cmid', function (req, res, next) {
     const cmid = req.params.cmid,
-        query = `DELETE FROM CRYPTO_LIST WHERE symbol = '${cmid}'`;
+        GET_CRYPTO_BY_ID = `SELECT id FROM CRYPTO_LIST WHERE symbol = '${cmid}'`,
+        id_list = new Set();
+
     client
-        .query(query)
-        .then(result => {
-            res.sendStatus(200)
+        .query(GET_CRYPTO_BY_ID)
+        .then(result1 => {
+            if (result1.rows.length === 0) {
+                res.status(400).json({
+                    error: "Crypto don't exist"
+                })
+                return
+            }
+            result1.rows.forEach(elem => {
+                id_list.add(elem.id)
+            })
+            id_list.forEach(id => {
+                const DELETE_CRYPTO_HISTORY_BY_CRYPTO_ID = `DELETE FROM CRYPTO_HISTORY WHERE crypto_id = '${id}'`,
+                    DELETE_CRYPTO = `DELETE FROM CRYPTO_LIST WHERE symbol = '${cmid}'`;
+                client
+                    .query(DELETE_CRYPTO_HISTORY_BY_CRYPTO_ID)
+                    .then(result2 => {
+                        client
+                            .query(DELETE_CRYPTO)
+                            .then(result3 => {
+                                res.sendStatus(200)
+                            })
+                            .catch(e => errorQuery(e, res))
+                    })
+                    .catch(e => errorQuery(e, res))
+            })
         })
         .catch(e => errorQuery(e, res))
+
 });
 
 module.exports = router;
