@@ -6,7 +6,7 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "test": "node_modules/.bin/cypress run --record"
+    "test": "./node_modules/.bin/cypress run --record"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.8.2",
