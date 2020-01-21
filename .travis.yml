@@ -39,7 +39,7 @@ _end-to-end-tests: &end-to-end-tests
   sudo: required
   cache: npm
   install:
-    - npm ci --silent ./frontend
+    - npm ci --silent --prefix ./frontend
   script:
     - ./ci/run_front.sh
     - cd frontend && npm run test
