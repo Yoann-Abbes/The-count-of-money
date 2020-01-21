@@ -192,13 +192,39 @@ examples:
 */
 router.delete('/cryptos/:cmid', function (req, res, next) {
     const cmid = req.params.cmid,
-        DELETE_CRYPTO = `DELETE FROM CRYPTO_LIST WHERE symbol = '${cmid}'`;
+        GET_CRYPTO_BY_ID = `SELECT id FROM CRYPTO_LIST WHERE symbol = '${cmid}'`,
+        id_list = new Set();
+
     client
-        .query(DELETE_CRYPTO)
-        .then(result => {
-            res.sendStatus(200)
+        .query(GET_CRYPTO_BY_ID)
+        .then(result1 => {
+            if (result1.rows.length === 0) {
+                res.status(400).json({
+                    error: "Crypto don't exist"
+                })
+                return
+            }
+            result1.rows.forEach(elem => {
+                id_list.add(elem.id)
+            })
+            id_list.forEach(id => {
+                const DELETE_CRYPTO_HISTORY_BY_CRYPTO_ID = `DELETE FROM CRYPTO_HISTORY WHERE crypto_id = '${id}'`,
+                    DELETE_CRYPTO = `DELETE FROM CRYPTO_LIST WHERE symbol = '${cmid}'`;
+                client
+                    .query(DELETE_CRYPTO_HISTORY_BY_CRYPTO_ID)
+                    .then(result2 => {
+                        client
+                            .query(DELETE_CRYPTO)
+                            .then(result3 => {
+                                res.sendStatus(200)
+                            })
+                            .catch(e => errorQuery(e, res))
+                    })
+                    .catch(e => errorQuery(e, res))
+            })
         })
         .catch(e => errorQuery(e, res))
+
 });
 
 module.exports = router;
