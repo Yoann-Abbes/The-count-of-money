@@ -18,30 +18,30 @@ examples:
     - /cryptos?cmids=BTC,ETH,XRP
 */
 router.get('/cryptos', function (req, res, next) {
-    const GET_CRYPTO_LIST = "SELECT * from CRYPTO_LIST",
+    let GET_CRYPTO_LIST = "SELECT * from CRYPTO_LIST",
         values = "";
     if (req.query && req.query.cmids) {
         const cmids = req.query.cmids.split(",");
         values = `'${cmids[0]}'`
         for (let i = 1; i < cmids.length; i++)
             values += `,'${cmids[i]}'`
-        const GET_CRYPTO_LIST_BY_SYMBOL = `SELECT id,symbol,fullname,picture_url from CRYPTO_LIST WHERE symbol IN (${values})`
+        GET_CRYPTO_LIST = `SELECT id,symbol,fullname,picture_url from CRYPTO_LIST WHERE symbol IN (${values})`
     }
     client
-        .query(GET_CRYPTO_LIST_BY_SYMBOL)
-        .then(result => {
+        .query(GET_CRYPTO_LIST)
+        .then(result1 => {
             const now = new Date()
             let a = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 1, 0, 0).getTime() / 1000
-            if (result.rows.length == 0)
+            if (result1.rows.length == 0)
                 res.status(400).json({
                     error: `No crypto matches symbols '${cmids}'`
                 })
             else {
-                const GET_CRYPTO_HISTORY_BY_DAY_AND_ID = `SELECT * from CRYPTO_HISTORY WHERE period = 'daily' AND crypto_id IN ( SELECT id FROM CRYPTO_LIST ) AND timestamp = to_timestamp(${a})`
+                let GET_CRYPTO_HISTORY_BY_DAY_AND_ID = `SELECT * from CRYPTO_HISTORY WHERE period = 'daily' AND crypto_id IN ( SELECT id FROM CRYPTO_LIST ) AND timestamp = to_timestamp(${a})`
                 if (values !== "")
-                    query2 = `SELECT * from CRYPTO_HISTORY WHERE period = 'daily' AND crypto_id IN ( SELECT id FROM CRYPTO_LIST WHERE symbol IN (${values})) AND timestamp = to_timestamp(${a})`
+                    GET_CRYPTO_HISTORY_BY_DAY_AND_ID = `SELECT * from CRYPTO_HISTORY WHERE period = 'daily' AND crypto_id IN ( SELECT id FROM CRYPTO_LIST WHERE symbol IN (${values})) AND timestamp = to_timestamp(${a})`
                 client
-                    .query(query2)
+                    .query(GET_CRYPTO_HISTORY_BY_DAY_AND_ID)
                     .then(result2 => {
                         result1.rows.forEach(elem1 => {
                             result2.rows.forEach(elem2 => {
@@ -72,10 +72,10 @@ examples:
     - /cryptos/XRP
 */
 router.get('/cryptos/:cmid', function (req, res, next) {
-    let cmid = req.params.cmid,
-        query1 = `SELECT * from CRYPTO_LIST WHERE symbol = '${cmid}'`;
+    const cmid = req.params.cmid,
+        GET_CRYPTO_WHERE_SYMBOL = `SELECT * from CRYPTO_LIST WHERE symbol = '${cmid}'`;
     client
-        .query(query1)
+        .query(GET_CRYPTO_WHERE_SYMBOL)
         .then(result1 => {
             let now = new Date()
             let a = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 1, 0, 0).getTime() / 1000
@@ -84,9 +84,9 @@ router.get('/cryptos/:cmid', function (req, res, next) {
                     error: `No crypto matches symbols '${cmid}'`
                 })
             else {
-                let query2 = `SELECT * from CRYPTO_HISTORY WHERE period = 'daily' AND crypto_id IN ( SELECT id FROM CRYPTO_LIST WHERE symbol = '${cmid}' ) AND timestamp = to_timestamp(${a})`
+                let GET_CRYPTO_DAY_INFO_BY_LIST_ID = `SELECT * from CRYPTO_HISTORY WHERE period = 'daily' AND crypto_id IN ( SELECT id FROM CRYPTO_LIST WHERE symbol = '${cmid}' ) AND timestamp = to_timestamp(${a})`
                 client
-                    .query(query2)
+                    .query(GET_CRYPTO_DAY_INFO_BY_LIST_ID)
                     .then(result2 => {
                         result1.rows.forEach(elem1 => {
                             result2.rows.forEach(elem2 => {
@@ -122,9 +122,9 @@ router.get('/cryptos/:cmid/history/:period', function (req, res, next) {
         period = req.params.period,
         validPeriod = ['daily', 'hourly', 'minute'];
     if (validPeriod.includes(period)) {
-        let query = `SELECT period,timestamp,open,high,low,close from CRYPTO_HISTORY WHERE period = '${period}' AND crypto_id = ( SELECT id FROM CRYPTO_LIST WHERE symbol = '${cmid}' LIMIT 1 )`
+        let GET_CRYPTO_HISTORY_BY_PERIOD = `SELECT period,timestamp,open,high,low,close from CRYPTO_HISTORY WHERE period = '${period}' AND crypto_id = ( SELECT id FROM CRYPTO_LIST WHERE symbol = '${cmid}' LIMIT 1 )`
         client
-            .query(query)
+            .query(GET_CRYPTO_HISTORY_BY_PERIOD)
             .then(result => {
                 if (result.rows.length === 0)
                     res.status(400).json({
@@ -163,14 +163,14 @@ router.post('/cryptos', function (req, res, next) {
         }
     });
 
-    let query1 = `SELECT * FROM CRYPTO_LIST WHERE symbol = '${symbol}'`;
+    let GET_CRYPTO_HISTORY_BY_ID = `SELECT * FROM CRYPTO_LIST WHERE symbol = '${symbol}'`;
     client
-        .query(query1)
+        .query(GET_CRYPTO_HISTORY_BY_ID)
         .then(result => {
             if (result.rows.length === 0) {
-                let query2 = `INSERT INTO CRYPTO_LIST (symbol, fullname, picture_url) VALUES ('${symbol}', '${fullname}', '${picture_url}')`;
+                let INSERT_NEW_CRYPTO = `INSERT INTO CRYPTO_LIST (symbol, fullname, picture_url) VALUES ('${symbol}', '${fullname}', '${picture_url}')`;
                 client
-                    .query(query2)
+                    .query(INSERT_NEW_CRYPTO)
                     .then(result2 => {
                         res.sendStatus(200)
                     })
@@ -192,9 +192,9 @@ examples:
 */
 router.delete('/cryptos/:cmid', function (req, res, next) {
     const cmid = req.params.cmid,
-        query = `DELETE FROM CRYPTO_LIST WHERE symbol = '${cmid}'`;
+        DELETE_CRYPTO = `DELETE FROM CRYPTO_LIST WHERE symbol = '${cmid}'`;
     client
-        .query(query)
+        .query(DELETE_CRYPTO)
         .then(result => {
             res.sendStatus(200)
         })
