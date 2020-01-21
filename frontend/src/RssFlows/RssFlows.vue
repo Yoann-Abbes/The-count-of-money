@@ -79,12 +79,12 @@ export default {
     }
   },
   async mounted () {
-    this.$store.commit('SET_LOADING')
+    this.$store.commit('app/SET_LOADING')
     await this.getFeeds()
-    this.$store.commit('UNSET_LOADING')
+    this.$store.commit('app/UNSET_LOADING')
   },
   computed: {
-    ...mapGetters(['getDarkMode']),
+    ...mapGetters('app', ['getDarkMode']),
     filteredFeeds () {
       if (
         !this.searchString ||
