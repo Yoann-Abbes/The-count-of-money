@@ -1,37 +1,21 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
+import app from './app'
+import auth from './auth'
+import cryptoList from './cryptoList'
+import cryptoHistory from './cryptoHistory'
+
+const debug = process.env.NODE_ENV !== 'production'
+
 Vue.use(Vuex)
 
 export default new Vuex.Store({
-  state: {
-    isLoading: false,
-    darkMode: false
-  },
-  mutations: {
-    SET_DARKMODE: (state) => {
-      state.darkMode = true
-    },
-    UNSET_DARKMODE: (state) => {
-      state.darkMode = false
-    },
-    SET_LOADING: (state) => {
-      state.isLoading = true
-    },
-    UNSET_LOADING: (state) => {
-      state.isLoading = false
-    }
-  },
-  actions: {
-  },
   modules: {
+    app,
+    auth,
+    cryptoHistory,
+    cryptoList
   },
-  getters: {
-    getLoading: (state) => {
-      return state.isLoading
-    },
-    getDarkMode: (state) => {
-      return state.darkMode
-    }
-  }
+  strict: debug
 })
