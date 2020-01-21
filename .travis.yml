@@ -42,7 +42,6 @@ _end-to-end-tests: &end-to-end-tests
   install:
     - npm ci --silent
   script:
-    - npm run serve
     - npm run test
 
 
