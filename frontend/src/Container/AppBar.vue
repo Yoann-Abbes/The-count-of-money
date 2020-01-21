@@ -32,7 +32,7 @@ import { mapGetters } from 'vuex'
 
 export default {
   computed: {
-    ...mapGetters(['getDarkMode'])
+    ...mapGetters('app', ['getDarkMode'])
   }
 }
 </script>

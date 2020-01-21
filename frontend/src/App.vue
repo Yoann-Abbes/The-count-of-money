@@ -23,7 +23,7 @@ export default {
     Overlay
   },
   computed: {
-    ...mapGetters(['getDarkMode'])
+    ...mapGetters('app', ['getDarkMode'])
   }
 }
 </script>

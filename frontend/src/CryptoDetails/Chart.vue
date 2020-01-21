@@ -22,7 +22,7 @@ export default {
     }, 1000)
   },
   computed: {
-    ...mapGetters(['getDarkMode'])
+    ...mapGetters('app', ['getDarkMode'])
   },
   methods: {
     load () {

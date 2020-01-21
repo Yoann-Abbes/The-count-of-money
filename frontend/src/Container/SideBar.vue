@@ -60,12 +60,12 @@ export default {
     this.darkMode = this.getDarkMode
   },
   computed: {
-    ...mapGetters(['getDarkMode'])
+    ...mapGetters('app', ['getDarkMode'])
   },
   watch: {
     darkMode: {
       handler (value) {
-        this.$store.commit(`${value ? '' : 'UN'}SET_DARKMODE`)
+        this.$store.commit(`app/${value ? '' : 'UN'}SET_DARKMODE`)
       }
     }
   },
