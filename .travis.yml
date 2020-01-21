@@ -30,7 +30,7 @@ _unit-tests: &unit-tests
   install:
     - npm ci --silent
   script:
-    - npm run unit-testing
+    - npm run test
 
 
 ### e2e tests avec Cypress
