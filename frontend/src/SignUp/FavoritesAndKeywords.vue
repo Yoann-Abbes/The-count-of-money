@@ -33,7 +33,7 @@
                 v-model="currentKeyword"
                 color="secondary"
                 append-icon="fa-plus-square"
-                label="Search"
+                label="Add keyword"
                 single-line
                 hide-details
                 @click:append="addChip"
