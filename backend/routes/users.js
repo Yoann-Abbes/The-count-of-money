@@ -102,7 +102,6 @@ router.post('/users/logout', function (req, res, next) {
     res.sendStatus(200);
 });
 
-
 /*
 GET /users/profile
 */
@@ -116,14 +115,6 @@ router.get('/users/profile', function (req, res, next) {
             delete result.rows[0].id
             delete result.rows[0].is_admin
             res.status(200).json(result.rows[0])
-            // res.status(200).json({
-            //     email: result.rows[0].email,
-            //     username: result.rows[0].username,
-            //     password: result.rows[0].password,
-            //     picture_url: result.rows[0].picture_url,
-            //     keyword : result.rows[0].keyword,
-            //     favorites_crypto: result.rows[0].favorites_crypto
-            // });
         })
         .catch(e => errorQuery(e, res))
 });
@@ -134,7 +125,6 @@ POST /users/profile
 router.post('/users/profile', function (req, res, next) {
     // Get id of user inside of JWT
     let id = 1; // TODO
-
     const params = {
             email: req.body.email,
             username: req.body.username,
@@ -145,10 +135,10 @@ router.post('/users/profile', function (req, res, next) {
         },
         email = req.body.email,
         badValues = [null, undefined, ""],
-        GET_ALL_USERS = "SELECT * FROM USERS";
+        GET_ALL_USERS_WHERE_NO_USER = `SELECT * FROM USERS WHERE id != ${id}`;
 
     client
-        .query(GET_ALL_USERS)
+        .query(GET_ALL_USERS_WHERE_NO_USER)
         .then(result1 => {
             for (let i = 0; i < result1.rows.length; i++)
                 if (!badValues.includes(email) && result1.rows[i].email === email) {
@@ -157,15 +147,21 @@ router.post('/users/profile', function (req, res, next) {
                     })
                     return
                 }
-            let keys = '',
-                values = '';
+            const setFormat = [];
             for (let [key, value] of Object.entries(params)) {
                 if (!badValues.includes(value)) {
-                    key 
+                    if (key === 'keyword')
+                        setFormat.push(`${key} = ARRAY [${value.map(e => {
+                            return `'${e}'`
+                        }).join()}]`)
+                    else if (key === 'favorites_crypto')
+                        setFormat.push(`${key} = ARRAY [${value}]`)
+                    else
+                        setFormat.push(`${key} = '${value}'`)
                 }
-                console.log(`${key}: ${value}`);
             }
-            let INSERT_USER = `INSERT INTO USERS (email, password, username, is_admin) VALUES ('${email}', '${password}', '${username}', 'false')`
+
+            let INSERT_USER = `UPDATE USERS SET ${setFormat.join()} WHERE id = ${id}`
             client
                 .query(INSERT_USER)
                 .then(result2 => {
