@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import CryptoDetails from '@/CryptoDetails/CryptoDetails.vue'
 import RssFlows from '@/RssFlows/RssFlows.vue'
+import SignUp from '../../SignUp/SignUp'
 
 Vue.use(VueRouter)
 
@@ -15,6 +16,11 @@ const routes = [
     path: '/CryptoDetails/:currency',
     name: 'CryptoDetails',
     component: CryptoDetails
+  },
+  {
+    path: '/SignUp',
+    name: 'SignUp',
+    component: SignUp
   }
 ]
 
