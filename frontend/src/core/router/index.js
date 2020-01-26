@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import CryptoDetails from '@/CryptoDetails/CryptoDetails.vue'
 import RssFlows from '@/RssFlows/RssFlows.vue'
 import LogIn from '../../LogIn/LogIn'
+import SignUp from '../../SignUp/SignUp'
 
 Vue.use(VueRouter)
 
@@ -21,6 +22,11 @@ const routes = [
     path: '/LogIn',
     name: 'LogIn',
     component: LogIn
+  },
+  {
+    path: '/SignUp',
+    name: 'SignUp',
+    component: SignUp
   }
 ]
 
