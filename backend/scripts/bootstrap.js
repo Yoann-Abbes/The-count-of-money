@@ -51,19 +51,6 @@ const getCryptoList = async () => {
 
 // GET EACH CRYPTO VALUES FOR 60 LAST DAYS
 const getCryptosDays = async () => {
-<<<<<<< HEAD
-    let query = 'INSERT INTO crypto_history (crypto_id, period, timestamp, open, high, low, close) VALUES \n';
-    for (const [index, crypto] of cryptos.entries()) {
-        const url = `https://min-api.cryptocompare.com/data/v2/histoday?fsym=${crypto}&tsym=${symbol}&limit=60&api_key=${api_key}`;
-        await axios.get(url)
-            .then(response => {
-                const days = response.data.Data.Data;
-                for (const day of days) {
-                    query += `('${index + 1}', 'daily', to_timestamp(${day.time}), '${day.open}', '${day.high}', '${day.low}', '${day.close}'),\n`
-                }
-
-            })
-=======
     let cryptoDaysQuery = 'INSERT INTO crypto_history (crypto_id, period, timestamp, open, high, low, close) VALUES \n';
 
     const cryptoDaysBar = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
@@ -77,7 +64,6 @@ const getCryptosDays = async () => {
             cryptoDaysBar.update(indexDay + index * NUMBER_OF_DAYS);
             cryptoDaysQuery += `('${index + 1}', 'daily', to_timestamp(${day.time}), '${day.open}', '${day.high}', '${day.low}', '${day.close}'),\n`;
         }
->>>>>>> ae0083f6300be4f5fa68432fa6a3903eddeb3ccc
     }
     cryptoDaysQuery = cryptoDaysQuery.slice(0, -2);
     cryptoDaysQuery += ';';
@@ -89,20 +75,6 @@ const getCryptosDays = async () => {
 
 // GET EACH CRYPTO VALUES FOR 48 LAST HOURS
 const getCryptosHours = async () => {
-<<<<<<< HEAD
-    let query = 'INSERT INTO crypto_history (crypto_id, period, timestamp, open, high, low, close) VALUES \n';
-    for (const [index, crypto] of cryptos.entries()) {
-        const url = `https://min-api.cryptocompare.com/data/v2/histohour?fsym=${crypto}&tsym=${symbol}&limit=48&api_key=${api_key}`;
-        await axios.get(url)
-            .then(response => {
-                const hours = response.data.Data.Data;
-                for (const hour of hours) {
-                    date = new Date(hour.time)
-                    query += `('${index + 1}', 'hourly', to_timestamp(${hour.time}), '${hour.open}', '${hour.high}', '${hour.low}', '${hour.close}'),\n`
-                }
-
-            })
-=======
     let cryptoHoursQuery = 'INSERT INTO crypto_history (crypto_id, period, timestamp, open, high, low, close) VALUES \n';
 
     const cryptoHoursBar = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
@@ -117,7 +89,6 @@ const getCryptosHours = async () => {
             cryptoHoursQuery += `('${index + 1}', 'hourly', to_timestamp(${hour.time}), '${hour.open}', '${hour.high}', '${hour.low}', '${hour.close}'),\n`;
         }
 
->>>>>>> ae0083f6300be4f5fa68432fa6a3903eddeb3ccc
     }
     cryptoHoursQuery = cryptoHoursQuery.slice(0, -2);
     cryptoHoursQuery += ';';
