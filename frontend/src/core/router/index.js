@@ -10,6 +10,10 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '/',
+    redirect: '/RssFlows'
+  },
+  {
+    path: '/RssFlows',
     name: 'RssFlows',
     component: RssFlows
   },
