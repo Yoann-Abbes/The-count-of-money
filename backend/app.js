@@ -8,7 +8,7 @@ const userRouter = require('./routes/users');
 const articlesRouter = require('./routes/articles');
 const swaggerDoc = require('./swaggerDoc');
 
-let app = express();
+const app = express();
 
 app.use(logger('dev'));
 app.use(express.json());
