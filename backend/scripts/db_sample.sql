@@ -5,7 +5,19 @@ DROP TABLE IF EXISTS RSS_LIST CASCADE;
 CREATE TABLE RSS_LIST (
     id serial PRIMARY KEY,
     link VARCHAR(500) NOT NULL,
-    description TEXT
+    name VARCHAR(255)
+);
+
+DROP TABLE IF EXISTS RSS_HISTORY CASCADE;
+CREATE TABLE RSS_HISTORY (
+    id serial PRIMARY KEY,
+    title VARCHAR(255),
+    link TEXT,
+    content TEXT,
+    creator VARCHAR(255),
+    pubDate TIMESTAMP,
+    categories VARCHAR(500) [],
+    FOREIGN KEY (rss_id) REFERENCES RSS_LIST
 );
 
 DROP TABLE IF EXISTS CRYPTO_LIST CASCADE;
@@ -42,36 +54,6 @@ CREATE TABLE USERS (
     keyword VARCHAR(500) [],
     favorites_crypto BIGINT []
 );
-
--- INSERT INTO CRYPTO_LIST VALUES (
---     nextval('crypto_list_id_seq'),
---     'bitcoin'
--- );
-
--- INSERT INTO CRYPTO_LIST VALUES (
---     nextval('crypto_list_id_seq'),
---     'etherum'
--- );
-
--- INSERT INTO CRYPTO_HISTORY VALUES (
---     nextval('crypto_history_id_seq'),
---     1,
---     '2016-06-22 19:10:25-07',
---     425235,
---     645646,
---     41985298,
---     5252895
--- );
-
--- INSERT INTO CRYPTO_HISTORY VALUES (
---     nextval('crypto_history_id_seq'),
---     2,
---     '2016-06-22 19:10:25-07',
---     87765,
---     09876,
---     12457689,
---     6565678
--- );
 
 INSERT INTO USERS VALUES (
     nextval('users_id_seq'),
