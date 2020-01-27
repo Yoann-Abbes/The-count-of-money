@@ -14,8 +14,14 @@
             <v-list-item-subtitle>sandra_a88@gmail.com</v-list-item-subtitle>
           </v-list-item-content>
           <v-list-item-action>
-            <v-icon>mdi-menu-down</v-icon>
+            <!-- <v-icon>fa-arrow-up</v-icon> -->
           </v-list-item-action>
+        </v-list-item>
+        <v-list-item>
+          <v-list-item-icon>
+            <v-switch v-model="darkMode"></v-switch>
+          </v-list-item-icon>
+          <v-list-item-title>Dark Mode</v-list-item-title>
         </v-list-item>
       </v-list>
     </template>
@@ -23,7 +29,12 @@
     <v-divider></v-divider>
 
     <v-list nav dense>
-      <v-list-item link :to="`/CryptoDetails/${cur.currency}`" v-for="cur of cryptoCurrency" :key="cur.currency">
+      <v-list-item
+        link
+        :to="`/CryptoDetails/${cur.currency}`"
+        v-for="cur of cryptoCurrency"
+        :key="cur.currency"
+      >
         <v-list-item-icon>
           <v-icon>{{cur.icon}}</v-icon>
         </v-list-item-icon>
@@ -42,9 +53,25 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
+  mounted () {
+    this.darkMode = this.getDarkMode
+  },
+  computed: {
+    ...mapGetters('app', ['getDarkMode'])
+  },
+  watch: {
+    darkMode: {
+      handler (value) {
+        this.$store.commit(`app/${value ? '' : 'UN'}SET_DARKMODE`)
+      }
+    }
+  },
   data () {
     return {
+      darkMode: false,
       cryptoCurrency: [
         {
           currency: 'BTC',

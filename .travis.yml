@@ -1,17 +1,20 @@
-### linter back
-_lint-back: &lint-back
-  os: linux
-  sudo: required
-  services: docker
-  cache:
-  script:
-    - ls -la
-
 ### linter front
 _lint-front: &lint-front
   os: linux
   sudo: required
   services: docker
+  cache: npm
+  before_install: cd frontend
+  install:
+    - npm ci --silent
+  script:
+    - npm run lint
+
+### linter back
+_lint-back: &lint-back
+  os: linux
+  sudo: required
+  before_install: cd backend
   cache:
   script:
     - ls -la
@@ -20,19 +23,26 @@ _lint-front: &lint-front
 _unit-tests: &unit-tests
   os: linux
   sudo: required
-  services: docker
-  cache:
+  language: node_js
+  cache: npm
+  node_js: 12
+  before_install: cd backend
+  install:
+    - npm ci --silent
   script:
-    - ls -la
+    - npm run test
 
 
 ### e2e tests avec Cypress
 _end-to-end-tests: &end-to-end-tests
   os: linux
   sudo: required
-  services: docker
+  cache: npm
+  install:
+    - npm ci --silent --prefix ./frontend
   script:
-    - ls -la
+    - ./ci/run_front.sh
+    - cd frontend && npm run test
 
 
 ### Deploy sur dockerhub
