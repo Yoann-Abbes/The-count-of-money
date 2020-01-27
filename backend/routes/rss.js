@@ -78,7 +78,7 @@ delete rss from the global list
 */
 router.delete('/rss/:id', function (req, res, next) {
     const GET_RSS_LIST = `SELECT * from RSS_LIST WHERE id = ${req.params.id}`,
-        DEL_RSS_HISTORY = `DELETE FROM RSS_HISTORY WHERE rss_id = ${req.params.id}`,
+        DEL_RSS_HISTORY = `DELETE FROM RSS_HISTORY WHERE rss_list_id = ${req.params.id}`,
         DEL_RSS_LIST = `DELETE FROM RSS_LIST WHERE id = ${req.params.id}`;
 
     client
