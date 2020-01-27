@@ -1,7 +1,7 @@
 <template>
   <div>
-    <v-btn @click="load">load</v-btn>
     <apexchart
+      ref="candleChart"
       width="100%"
       height="400"
       type="candlestick"
@@ -13,11 +13,16 @@
 
 <script>
 import Vue from 'vue'
+import { mapGetters } from 'vuex'
+
 export default {
   mounted () {
     setTimeout(() => {
       this.load()
     }, 1000)
+  },
+  computed: {
+    ...mapGetters('app', ['getDarkMode'])
   },
   methods: {
     load () {
@@ -29,6 +34,20 @@ export default {
         setTimeout(() => {
           this.load()
         }, 1000)
+      }
+    }
+  },
+  watch: {
+    getDarkMode: {
+      handler (value) {
+        this.$refs.candleChart.updateOptions({
+          theme: {
+            mode: value ? 'dark' : 'ligth'
+          },
+          chart: {
+            background: value ? '#424242' : '#FAFAFA'
+          }
+        })
       }
     }
   },
@@ -286,10 +305,11 @@ export default {
       chartOptions: {
         chart: {
           type: 'candlestick',
-          height: 350
+          height: 350,
+          background: this.getDarkMode ? '#424242' : '#FAFAFA'
         },
         title: {
-          text: 'BTN',
+          text: 'BTC',
           align: 'left'
         },
         xaxis: {
@@ -299,6 +319,9 @@ export default {
           tooltip: {
             enabled: true
           }
+        },
+        theme: {
+          mode: this.getDarkMode ? 'dark' : 'light'
         }
       }
     }

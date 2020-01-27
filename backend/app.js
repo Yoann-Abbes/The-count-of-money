@@ -1,14 +1,14 @@
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
 
-var indexRouter = require('./routes/index');
-var userRouter = require('./routes/user');
-var adminRouter = require('./routes/admin');
+const cryptoRouter = require('./routes/cryptos');
+const userRouter = require('./routes/users');
+const articlesRouter = require('./routes/articles');
 const swaggerDoc = require('./swaggerDoc');
 
-var app = express();
+const app = express();
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -18,9 +18,9 @@ app.use(express.urlencoded({
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
-app.use('/user', userRouter);
-app.use('/admin', adminRouter);
+app.use('/', cryptoRouter);
+app.use('/', userRouter);
+app.use('/', articlesRouter);
 swaggerDoc(app);
 
 module.exports = app;
