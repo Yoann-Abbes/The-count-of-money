@@ -77,7 +77,7 @@ const getRssHistory = async () => {
 
 (async () => {
     try {
-        client.connect();
+        await client.connect();
         await getRssHistory();
         const rssJob = new CronJob('*/5 * * * *', () => {
             getRssHistory();
