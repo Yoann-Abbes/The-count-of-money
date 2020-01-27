@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <v-app :style="{backgroundColor: getDarkMode? '#424242' : ''}">
     <Overlay />
     <AppBar />
     <SideBar />
@@ -13,6 +13,7 @@
 import AppBar from '@/Container/AppBar'
 import SideBar from '@/Container/SideBar'
 import Overlay from '@/Overlay/Overlay'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'App',
@@ -20,6 +21,9 @@ export default {
     AppBar,
     SideBar,
     Overlay
+  },
+  computed: {
+    ...mapGetters('app', ['getDarkMode'])
   }
 }
 </script>

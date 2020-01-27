@@ -13,9 +13,9 @@ export default {
     Chart
   },
   mounted () {
-    this.$store.commit('SET_LOADING')
+    this.$store.commit('app/SET_LOADING')
     setTimeout(() => {
-      this.$store.commit('UNSET_LOADING')
+      this.$store.commit('app/UNSET_LOADING')
     }, 2000)
   }
 }
