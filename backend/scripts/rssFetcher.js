@@ -24,7 +24,7 @@ const client = new Client({
 
 // const CORS_PROXY = 'https://cors-anywhere.herokuapp.com/';
 const CORS_PROXY = '';
-const RSS_INIT_QUERY = 'INSERT INTO rss_history (rss_id, title, link, content, creator, pubDate, categories) VALUES \n';
+const RSS_INIT_QUERY = 'INSERT INTO rss_history (rss_list_id, title, link, content, creator, pubDate, categories) VALUES \n';
 
 const checkIfExistQuery = async (item) => {
     let checkIfExistQuery = 'SELECT id FROM rss_history where link = \'';
