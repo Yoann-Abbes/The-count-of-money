@@ -76,3 +76,20 @@ INSERT INTO USERS VALUES (
     ARRAY ['bitcoin', 'etherum'],
     ARRAY [1, 2]
 );
+
+INSERT INTO RSS_LIST (link, name) VALUES (
+    'https://bitcoin.fr/feed/',
+    'BitCoin'
+),(
+    'https://cryptogains.fr/feed',
+    'CryptoGains'
+),(
+    'https://cryptonaute.fr/feed/',
+    'CryptoNaute'
+),(
+    'https://news.crypto-analyse.com/feed/',
+    'CryptoAnalyse'
+),(
+    'https://cryptoactu.com/feed/',
+    'CryptoActu'
+);
