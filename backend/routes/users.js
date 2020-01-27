@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const client = require('../config/clientPg')
+const jwt = require('jsonwebtoken');
+const authentication = require('../middleware/authentication');
 
 function errorQuery(e, res) {
     res.status(418).json({
@@ -82,8 +84,9 @@ router.get('/users/login', function (req, res, next) {
                 if (user.email === email && user.password === password) {
                     // TODO JWT
                     // JWT must contain userID => user.id
+                    const token = jwt.sign({_id: user.id, _isAdmin: user.is_admin }, process.env.JWT_KEY, { algorithm: 'HS256'});
                     res.header({
-                        JWT: "jwt"
+                        JWT: token
                     }).sendStatus(200)
                     return
                 }
@@ -106,8 +109,7 @@ router.post('/users/logout', function (req, res, next) {
 GET /users/profile
 */
 router.get('/users/profile', function (req, res, next) {
-    // Get id of user inside of JWT
-    let id = 1; // TODO
+    let id = authentication.idUserRecovered(req);
     let GET_USERS_WHERE_ID = `SELECT * FROM USERS WHERE id = '${id}' LIMIT 1`;
     client
         .query(GET_USERS_WHERE_ID)
@@ -123,8 +125,7 @@ router.get('/users/profile', function (req, res, next) {
 POST /users/profile
 */
 router.post('/users/profile', function (req, res, next) {
-    // Get id of user inside of JWT
-    let id = 1; // TODO
+    let id = authentication.idUserRecovered(req);
     const params = {
             email: req.body.email,
             username: req.body.username,
