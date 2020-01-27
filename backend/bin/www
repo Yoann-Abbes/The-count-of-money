@@ -7,7 +7,7 @@ require('dotenv').config()
  */
 
 const app = require('../app');
-let debug = require('debug')('backend:server');
+const debug = require('debug')('backend:server');
 let http = require('http');
 
 /**
