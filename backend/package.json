@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
+    "startDebug": "DEBUG=backend:* npm start",
     "test": "./node_modules/.bin/mocha ./test"
   },
   "dependencies": {
