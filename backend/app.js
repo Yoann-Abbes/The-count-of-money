@@ -6,6 +6,8 @@ const logger = require('morgan');
 const cryptoRouter = require('./routes/cryptos');
 const userRouter = require('./routes/users');
 const articlesRouter = require('./routes/articles');
+const rssRouter = require('./routes/rss');
+
 const swaggerDoc = require('./swaggerDoc');
 
 const app = express();
@@ -29,7 +31,7 @@ app.use(function(req, res, next) {
 app.use('/', cryptoRouter);
 app.use('/', userRouter);
 app.use('/', articlesRouter);
-
+app.use('/', rssRouter);
 swaggerDoc(app);
 
 module.exports = app;
