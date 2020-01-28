@@ -1,10 +1,14 @@
+import requester from "../service/requester";
+
 const state = {
   isLoading: false,
   darkMode: false
 }
 
 const actions = {
-
+  init () {
+    requester.setHeader('Authorization', localStorage.getItem('token') || '')
+  }
 }
 
 const mutations = {

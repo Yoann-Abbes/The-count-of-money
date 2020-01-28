@@ -27,6 +27,7 @@
                 type="password"
                 required>
               </v-text-field>
+              <p v-bind:style="{ color: msgErrColor }">{{msgErr}}</p>
               <v-btn
                 color="secondary"
                 type="submit">
@@ -48,7 +49,9 @@ export default {
   data: function () {
     return {
       email: '',
-      password: ''
+      password: '',
+      msgErr: '',
+      msgErrColor: 'None'
     }
   },
   methods: {
@@ -57,7 +60,22 @@ export default {
         email: this.email,
         password: this.password
       }
-      console.log(target)
+      this.$store.dispatch('auth/login', target)
+        .then(() => {
+          this.msgErr = 'success'
+          this.msgErrColor = 'green'
+          this.$store.dispatch('auth/getProfile')
+            .then(() => { this.msgErr = 'success profile' }) // TODO redirect to profile
+            .catch(err => console.log(err))
+        })
+        .catch(err => {
+          this.msgErrColor = 'red'
+          if (err.status === 400) {
+            this.msgErr = 'wrong password or email'
+          } else {
+            this.msgErr = 'error server'
+          }
+        })
     }
   }
 }
