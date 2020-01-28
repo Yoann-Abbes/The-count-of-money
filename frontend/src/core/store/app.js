@@ -1,4 +1,4 @@
-import requester from "../service/requester";
+import requester from '../service/requester'
 
 const state = {
   isLoading: false,
