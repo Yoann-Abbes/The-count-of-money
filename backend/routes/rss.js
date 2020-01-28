@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const client = require('../config/clientPg')
+const client = require('../config/clientPg');
+const authentication = require('../middleware/authentication');
 
 function errorQuery(e, res) {
     res.status(418).json({
@@ -14,7 +15,7 @@ function errorQuery(e, res) {
 GET /rss/
 get list of all rss url and name
 */
-router.get('/rss', function (req, res, next) {
+router.get('/rss', authentication.isAdmin, function (req, res, next) {
     const GET_RSS_LIST = `SELECT * from RSS_LIST`;
 
     client
@@ -36,7 +37,7 @@ POST /rss/
 
 adding a new rss to the global list
 */
-router.post('/rss', function (req, res, next) {
+router.post('/rss', authentication.isAdmin, function (req, res, next) {
     const link = req.body.link,
         name = req.body.name,
         GET_RSS_LIST = `SELECT * from RSS_LIST`,
@@ -76,7 +77,7 @@ DELETE /rss/:id
 example : /rss/4
 delete rss from the global list
 */
-router.delete('/rss/:id', function (req, res, next) {
+router.delete('/rss/:id', authentication.isAdmin, function (req, res, next) {
     const GET_RSS_LIST = `SELECT * from RSS_LIST WHERE id = ${req.params.id}`,
         DEL_RSS_HISTORY = `DELETE FROM RSS_HISTORY WHERE rss_list_id = ${req.params.id}`,
         DEL_RSS_LIST = `DELETE FROM RSS_LIST WHERE id = ${req.params.id}`;
