@@ -3,7 +3,7 @@
     <Overlay />
     <AppBar />
     <SideBar />
-    <v-content class="ma-5">
+    <v-content class="ma-5" v-if="getAppInitiated">
       <router-view></router-view>
     </v-content>
   </v-app>
@@ -23,7 +23,11 @@ export default {
     Overlay
   },
   computed: {
-    ...mapGetters('app', ['getDarkMode'])
+    ...mapGetters('app', ['getDarkMode']),
+    ...mapGetters('app', ['getAppInitiated'])
+  },
+  mounted () {
+    this.$store.dispatch('app/init')
   }
 }
 </script>

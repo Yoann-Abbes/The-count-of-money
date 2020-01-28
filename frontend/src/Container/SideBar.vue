@@ -30,23 +30,23 @@
 
     <v-list nav dense>
       <v-list-item
+        v-for="cur of getCryptos"
+        :to="`/CryptoDetails/${cur.symbol}`"
+        :key="cur.symbol"
         link
-        :to="`/CryptoDetails/${cur.currency}`"
-        v-for="cur of cryptoCurrency"
-        :key="cur.currency"
       >
         <v-list-item-icon>
-          <v-icon>{{cur.icon}}</v-icon>
+          <v-img :src="cur.picture_url" aspect-ratio="1.7" />
         </v-list-item-icon>
         <v-list-item-title>
-          <span class="overline text-left">{{cur.value}}</span>
+          <span class="overline text-left">{{cur.fullname}}</span>
         </v-list-item-title>
-        <v-list-item-subtitle>
+        <!-- <v-list-item-subtitle>
           <span class="subtitle-2 text-right green--text">{{cur.percentage}}%</span>
           <v-icon dense v-if="cur.percentage > 0" color="#2E7D32">fa-arrow-up</v-icon>
           <v-icon dense v-if="cur.percentage === 0" color="#BDBDBD">fa-arrow-right</v-icon>
           <v-icon dense v-if="cur.percentage < 0" color="#C62828">fa-arrow-down</v-icon>
-        </v-list-item-subtitle>
+        </v-list-item-subtitle>-->
       </v-list-item>
     </v-list>
   </v-navigation-drawer>
@@ -60,7 +60,8 @@ export default {
     this.darkMode = this.getDarkMode
   },
   computed: {
-    ...mapGetters('app', ['getDarkMode'])
+    ...mapGetters('app', ['getDarkMode']),
+    ...mapGetters('cryptoList', ['getCryptos'])
   },
   watch: {
     darkMode: {
@@ -71,15 +72,7 @@ export default {
   },
   data () {
     return {
-      darkMode: false,
-      cryptoCurrency: [
-        {
-          currency: 'BTC',
-          icon: 'fab fa-bitcoin',
-          value: '3232.234',
-          percentage: '0.98'
-        }
-      ]
+      darkMode: false
     }
   }
 }
