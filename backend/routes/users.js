@@ -63,7 +63,7 @@ mandatory query params:
 optional query params:
     /
 */
-router.get('/users/login', function (req, res, next) {
+router.get('/users/login', authentication.isAnonymous, function (req, res, next) {
     const email = req.query.email,
         password = req.query.password,
         badValues = [null, undefined, ""];
@@ -82,9 +82,7 @@ router.get('/users/login', function (req, res, next) {
             for (let i = 0; i < result.rows.length; i++) {
                 const user = result.rows[i];
                 if (user.email === email && user.password === password) {
-                    // TODO JWT
-                    // JWT must contain userID => user.id
-                    const token = jwt.sign({_id: user.id, _isAdmin: user.is_admin }, process.env.JWT_KEY, { algorithm: 'HS256'});
+                    const token = jwt.sign({_id: user.id, _isAdmin: user.is_admin }, process.env.JWT_KEY, { expiresIn: '1d'});
                     res.header({
                         JWT: token
                     }).sendStatus(200)
@@ -101,14 +99,14 @@ router.get('/users/login', function (req, res, next) {
 /*
 POST /users/logout
 */
-router.post('/users/logout', function (req, res, next) {
+router.post('/users/logout', authentication.isNotAnonymous, function (req, res, next) {
     res.sendStatus(200);
 });
 
 /*
 GET /users/profile
 */
-router.get('/users/profile', function (req, res, next) {
+router.get('/users/profile', authentication.isNotAnonymous, function (req, res, next) {
     let id = authentication.idUserRecovered(req);
     let GET_USERS_WHERE_ID = `SELECT * FROM USERS WHERE id = '${id}' LIMIT 1`;
     client
@@ -124,7 +122,7 @@ router.get('/users/profile', function (req, res, next) {
 /*
 POST /users/profile
 */
-router.post('/users/profile', function (req, res, next) {
+router.post('/users/profile', authentication.isNotAnonymous, function (req, res, next) {
     let id = authentication.idUserRecovered(req);
     const params = {
             email: req.body.email,

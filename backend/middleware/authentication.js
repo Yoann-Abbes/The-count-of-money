@@ -2,12 +2,12 @@ const jwt = require('jsonwebtoken');
 
 module.exports = {
     isAuthorized: function(req, res, next) {
-        if (typeof req.headers.authorization !== "undefined") {
+        if (typeof req.headers.jwt !== "undefined") {
             // Token recovering and parse out the header
-            let token = req.headers.authorization.split(" ")[1];
+            let token = req.headers.jwt;
             
             // JSON Web Token validation
-            jwt.verify(token, process.env.JWT_KEY , {algorithm: "HS256"}, (err, client) => {
+            jwt.verify(token, process.env.JWT_KEY, (err, client) => {
                 if (err) {
                     // In case of an error, the user is not authorized
                     res.status(500).json({error: "Not Authorized"});
@@ -17,14 +17,13 @@ module.exports = {
                 return next();
             });
         } else {
-            // Not authorization header exists
+            // No authorization header exists
             res.status(500).json({error: "Not Authorization header exists"});
             throw new Error("Not Authorization header exists");
         }
     },
 
     idUserRecovered: function(req, res, next) {
-        if (typeof req.headers.jwt !== "undefined") {
             let token = req.headers.jwt,
                 decoded;
             try {
@@ -33,29 +32,44 @@ module.exports = {
                 return res.status(401).send('Unauthorized');
             }
             return decoded._id;
-        } else {
-            res.status(500).json({error: "Not Authorization existing"});
-            throw new Error("Not Authorization existing");
-        }
     },
 
+    // Check if the user is an admin
     isAdmin: function(req, res, next) {
         if (typeof req.headers.jwt !== "undefined") {
             let token = req.headers.jwt,
                 decoded;
             try {
                 decoded = jwt.verify(token, process.env.JWT_KEY);
+                if (decoded._isAdmin) { 
+                    return next(); 
+                } else {
+                    return res.status(401).send('Unauthorized');
+                }
             } catch (e) {
                 return res.status(401).send('Unauthorized');
-            }
-            if (decoded._isAdmin) { 
-                return next(); 
-            } else { 
-                res.status(401).json({ error: "You have no right to make this action" });
-            }
+            }   
         } else {
-            res.status(500).json({error: "Not Authorization existing"});
-            throw new Error("Not Authorization existing");
+            res.status(500).json({error: "No Authorization existing"});
+            throw new Error("No Authorization existing");
+        }
+    },
+
+    // Check if the user is not anonymous, he can be a logged user or an admin
+    isNotAnonymous: function(req, res, next) {
+        if (typeof req.headers.jwt !== "undefined") {
+            return next();
+        } else {
+            return res.status(401).send('Unauthorized');
+        }
+    },
+
+    // Check if the user has no already a token for login
+    isAnonymous: function(req, res, next) {
+        if (typeof req.headers.jwt !== "undefined") {
+            return res.status(401).send('Already logged');
+        } else {
+            return next();
         }
     }
 };
