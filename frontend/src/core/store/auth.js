@@ -18,7 +18,6 @@ const actions = {
     return new Promise((resolve, reject) => {
       requester.get(ApiUrl)
         .then(resp => {
-          console.log(resp)
           commit('loginSuccess', resp)
           resolve(resp)
         })
@@ -33,7 +32,6 @@ const actions = {
     return new Promise((resolve, reject) => {
       requester.get(ApiUrl)
         .then(resp => {
-          console.log(resp)
           commit('profileSuccess', resp)
           resolve(resp)
         })
