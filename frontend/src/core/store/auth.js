@@ -1,82 +1,61 @@
+import Vue from 'vue'
 import requester from '../service/requester'
 
 const state = {
   token: localStorage.getItem('token') || '',
-  baseApiUrl: 'http://localhost:5005',
-  waitingForConnection: false,
-  email: '',
-  username: '',
-  picture_url: '',
-  keyword: [],
-  favorites_crypto: []
+  user: {
+    email: '',
+    username: '',
+    picture_url: '',
+    keyword: [],
+    favorites_crypto: []
+  }
 }
 
 const actions = {
-
-  login ({ commit }, user) {
-    const ApiUrl = state.baseApiUrl + '/users/login?email=' + user.email + '&password=' + user.password
-    return new Promise((resolve, reject) => {
-      requester.get(ApiUrl)
-        .then(resp => {
-          commit('loginSuccess', resp)
-          resolve(resp)
-        })
-        .catch(err => {
-          commit('loginFail', err.response)
-          reject(err.response)
-        })
-    })
+  async login ({ commit, dispatch, rootGetters }, user) {
+    const ApiUrl = rootGetters['app/getBaseUrl'] + '/users/login?email=' + user.email + '&password=' + user.password
+    try {
+      const responseLogin = await requester.get(ApiUrl)
+      localStorage.setItem('token', responseLogin.headers.jwt)
+      // requester.setHeader('Authorization', responseLogin.headers.jwt)
+      commit('SET_TOKEN', responseLogin.headers.jwt)
+      const responseGetProfile = await dispatch('getProfile')
+      if (responseGetProfile.status) {
+        return { status: true, message: 'login and profile loading complete' }
+      } else {
+        return { status: false, message: 'profile loading error' }
+      }
+    } catch (error) {
+      localStorage.removeItem('token')
+      return { state: true, message: error.response }
+    }
   },
-  getProfile ({ commit }) {
-    const ApiUrl = state.baseApiUrl + '/users/profile'
-    return new Promise((resolve, reject) => {
-      requester.get(ApiUrl)
-        .then(resp => {
-          commit('profileSuccess', resp)
-          resolve(resp)
-        })
-        .catch(err => {
-          reject(err.response)
-        })
-    })
+  async getProfile ({ commit, rootGetters }) {
+    const ApiUrl = rootGetters['app/getBaseUrl'] + '/users/profile'
+    try {
+      const response = await requester.get(ApiUrl)
+      commit('SET_USER_INFORMATION', response.data)
+      return { status: true, message: response.data }
+    } catch (error) {
+      localStorage.removeItem('token')
+      return { status: false, message: error.response }
+    }
   }
 }
 
 const mutations = {
-  loginSuccess (state, resp) {
-    if (resp.data === 'OK' && resp.status === 200) {
-      localStorage.setItem('token', resp.headers.JWT)
-      requester.setHeader('Authorization', resp.headers.JWT)
-      state.waitingForConnection = true
-    } else {
-      state.waitingForConnection = false
-      localStorage.removeItem('token')
-    }
+  SET_TOKEN (state, token) {
+    state.token = token
   },
-  loginFail (state, resp) {
-    state.waitingForConnection = false
-    if (resp.data.error === 'Bad credentials' && resp.status === 400) {
-      localStorage.removeItem('token')
-    }
-  },
-  profileSuccess (state, resp) {
-    state.email = resp.data.email
-    state.username = resp.data.username
-    state.picture_url = resp.data.picture_url
-    state.keyword = resp.data.keyword
-    state.favorites_crypto = resp.data.favorites_crypto
+  SET_USER_INFORMATION (state, resp) {
+    Vue.set(state, 'user', resp)
   }
 }
 
 const getters = {
-  getUsername: (state) => {
-    return state.username
-  },
-  getEmail: (state) => {
-    return state.email
-  },
-  getUrlPicture: (state) => {
-    return state.picture_url
+  getUser: (state) => {
+    return state.user
   }
 }
 

@@ -55,27 +55,20 @@ export default {
     }
   },
   methods: {
-    loginUser () {
+    async loginUser () {
       let target = {
         email: this.email,
         password: this.password
       }
-      this.$store.dispatch('auth/login', target)
-        .then(() => {
-          this.msgErr = 'success'
-          this.msgErrColor = 'green'
-          this.$store.dispatch('auth/getProfile')
-            .then(() => { this.msgErr = 'success profile' }) // TODO redirect to profile
-            .catch(err => console.log(err))
-        })
-        .catch(err => {
-          this.msgErrColor = 'red'
-          if (err.status === 400) {
-            this.msgErr = 'wrong password or email'
-          } else {
-            this.msgErr = 'error server'
-          }
-        })
+      const responseLogin = await this.$store.dispatch('auth/login', target)
+      console.log(responseLogin)
+      this.msgErr = responseLogin.message
+      if (responseLogin.status) {
+        this.msgErrColor = 'green'
+        // TODO redirection home page
+      } else {
+        this.msgErrColor = 'red'
+      }
     }
   }
 }
