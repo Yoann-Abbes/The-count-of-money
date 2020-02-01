@@ -3,6 +3,7 @@ import requester from '../service/requester'
 
 const state = {
   token: localStorage.getItem('token') || '',
+  isLogin: false,
   user: {
     email: '',
     username: '',
@@ -22,8 +23,10 @@ const actions = {
       commit('SET_TOKEN', responseLogin.headers.jwt)
       const responseGetProfile = await dispatch('getProfile')
       if (responseGetProfile.status) {
+        commit('SET_IS_LOGIN', true)
         return { status: true, message: 'login and profile loading complete' }
       } else {
+        commit('SET_IS_LOGIN', false)
         return { status: false, message: 'profile loading error' }
       }
     } catch (error) {
@@ -50,6 +53,9 @@ const mutations = {
   },
   SET_USER_INFORMATION (state, resp) {
     Vue.set(state, 'user', resp)
+  },
+  SET_IS_LOGIN (state, resp) {
+    state.isLogin = resp
   }
 }
 
