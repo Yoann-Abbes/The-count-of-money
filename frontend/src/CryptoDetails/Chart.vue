@@ -28,17 +28,31 @@ export default {
       ]
     }
   },
+  mounted () {
+    this.updateTheme(this.getDarkMode)
+  },
+  methods: {
+    updateTheme (value) {
+      this.$refs.candleChart.updateOptions({
+        theme: {
+          mode: value ? 'dark' : 'light'
+        },
+        chart: {
+          background: value ? '#424242' : '#FAFAFA'
+        }
+      })
+    }
+  },
   watch: {
+    '$route': {
+      handler (value) {
+        this.updateTheme(this.getDarkMode)
+      },
+      deep: true
+    },
     getDarkMode: {
       handler (value) {
-        this.$refs.candleChart.updateOptions({
-          theme: {
-            mode: value ? 'dark' : 'light'
-          },
-          chart: {
-            background: value ? '#424242' : '#FAFAFA'
-          }
-        })
+        this.updateTheme(value)
       }
     }
   },
