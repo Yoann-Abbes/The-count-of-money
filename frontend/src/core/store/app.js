@@ -3,18 +3,24 @@ import requester from '../service/requester'
 const state = {
   isLoading: false,
   darkMode: false,
-  baseApiUrl: 'http://localhost:5005'
+  baseApiUrl: 'http://localhost:5005',
+  appInitiated: false
 }
 
 const actions = {
-  init () {
+  init: async ({ dispatch, commit }) => {
     if (localStorage.getItem('token') != null) {
       requester.setHeader('Authorization', localStorage.getItem('token'))
     }
+    await dispatch('cryptoList/fetchCryptoList', null, { root: true })
+    commit('SET_APP_INITIATED')
   }
 }
 
 const mutations = {
+  SET_APP_INITIATED: (state) => {
+    state.appInitiated = true
+  },
   SET_DARKMODE: (state) => {
     state.darkMode = true
   },
@@ -38,6 +44,9 @@ const getters = {
   },
   getBaseUrl: (state) => {
     return state.baseApiUrl
+  },
+  getAppInitiated: (state) => {
+    return state.appInitiated
   }
 }
 

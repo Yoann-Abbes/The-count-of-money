@@ -2,15 +2,21 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import CryptoDetails from '@/CryptoDetails/CryptoDetails.vue'
 import RssFlows from '@/RssFlows/RssFlows.vue'
-import LogIn from '../../LogIn/LogIn'
-import SignUp from '../../SignUp/SignUp'
+import LogIn from '@/LogIn/LogIn'
+import SignUp from '@/SignUp/SignUp'
+import Home from '@/Home/Home'
 
 Vue.use(VueRouter)
 
 const routes = [
   {
     path: '/',
-    redirect: '/RssFlows'
+    redirect: '/Home'
+  },
+  {
+    path: '/Home',
+    name: 'Home',
+    component: Home
   },
   {
     path: '/RssFlows',
