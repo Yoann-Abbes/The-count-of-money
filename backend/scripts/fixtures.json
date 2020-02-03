@@ -1,0 +1,80 @@
+{
+    "users": [
+        {
+            "is_admin": false,
+            "email": "frodon.sacquet@gmail.com",
+            "password": "jesuisfaible",
+            "username": "frodon",
+            "picture_url": "https://randomuser.me/api/portraits/men/17.jpg",
+            "keyword": ["bitcoin", "etherum"],
+            "favorites_cryptos": [1, 2]
+        },
+        {
+            "is_admin": false,
+            "email": "sam.gamegie@gmail.com",
+            "password": "frodonjetaime",
+            "username": "sam",
+            "picture_url": "https://randomuser.me/api/portraits/men/18.jpg",
+            "keyword": ["bitcoin", "crypto"],
+            "favorites_cryptos": [2, 4]
+        },
+        {
+            "is_admin": true,
+            "email": "aragorn@gmail.com",
+            "password": "jaitoutfaistoutseul",
+            "username": "grandPa",
+            "picture_url": "https://randomuser.me/api/portraits/men/19.jpg",
+            "keyword": ["etherum", "crypto"],
+            "favorites_cryptos": [1, 3]
+        },
+        {
+            "is_admin": true,
+            "email": "galadrielle@gmail.com",
+            "password": "fautpasmenerver",
+            "username": "reine de la foret kiss",
+            "picture_url": "https://randomuser.me/api/portraits/women/64.jpg",
+            "keyword": ["etherum", "crypto"],
+            "favorites_cryptos": [2, 5]
+        },
+        {
+            "is_admin": false,
+            "email": "eowyn@gmail.com",
+            "password": "jaienviedepecho",
+            "username": "ImAMen",
+            "picture_url": "https://randomuser.me/api/portraits/women/65.jpg",
+            "keyword": ["etherum", "crypto"],
+            "favorites_cryptos": [5, 6]
+        },
+        {
+            "is_admin": true,
+            "email": "gandalf@gmail.com",
+            "password": "desfoisgrisdesfoisblanc",
+            "username": "FUYEZ",
+            "picture_url": "https://randomuser.me/api/portraits/men/20.jpg",
+            "keyword": ["etherum", "crypto", "bitcoin"],
+            "favorites_cryptos": [5, 2, 3, 4]
+        }
+    ],
+    "rssFeeds": [
+        {
+            "url": "https://bitcoin.fr/feed/",
+            "name": "BitCoin"
+        },
+        {
+            "url": "https://cryptogains.fr/feed",
+            "name": "CryptoGains"
+        },
+        {
+            "url": "https://cryptonaute.fr/feed/",
+            "name": "CryptoNaute"
+        },
+        {
+            "url": "https://news.crypto-analyse.com/feed/",
+            "name": "CryptoAnalyse"
+        },
+        {
+            "url": "https://cryptoactu.com/feed/",
+            "name": "CryptoActu"
+        }
+    ]
+}
