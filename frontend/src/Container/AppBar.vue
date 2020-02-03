@@ -1,6 +1,6 @@
 <template>
   <v-app-bar app dark>
-    <div class="d-flex align-center">
+    <router-link class="d-flex align-center" :to="'/'">
       <v-img
         alt="BITSOFCOIN"
         class="shrink mr-2"
@@ -17,7 +17,7 @@
         src="@/core/assets/Brand.png"
         width="250"
       />
-    </div>
+    </router-link>
 
     <v-spacer></v-spacer>
     <v-btn text to="/RssFlows">RSS</v-btn>

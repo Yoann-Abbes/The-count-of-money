@@ -1,73 +1,67 @@
 <template>
-    <div>
+  <v-card elevation="0" :dark="getDarkMode">
+    <form>
       <v-card elevation="0">
-        <form>
-          <v-card elevation="0">
-            <v-card-title>
-              Favorite Crypto Currency (Optional)
-              <v-spacer></v-spacer>
-              <v-text-field
-                v-model="search"
-                color="secondary"
-                append-icon="fa-search"
-                label="Search"
-                single-line
-                hide-details
-              ></v-text-field>
-            </v-card-title>
-            <v-data-table
-              v-model="favoritesSelected"
-              :headers="headers"
-              :items="favorites"
-              :search="search"
-              item-key="name"
-              show-select
-              class="elevation-1"
-            ></v-data-table>
-          </v-card>
-          <v-card elevation="0">
-            <v-card-title>
-              Keywords (Optional)
-              <v-spacer></v-spacer>
-              <v-text-field
-                v-model="currentKeyword"
-                color="secondary"
-                append-icon="fa-plus-square"
-                label="Add keyword"
-                single-line
-                hide-details
-                @click:append="addChip"
-                @keyup="addChipEnterKey"
-              ></v-text-field>
-            </v-card-title>
-            <v-chip
-              v-for="item in keywords"
-              :key="item"
-              @click:close="closeChip(item)"
-              class="ma-2"
-              close>
-              {{item}}
-            </v-chip>
-          </v-card>
-        </form>
+        <v-card-title>
+          Favorite Crypto Currency (Optional)
+          <v-spacer></v-spacer>
+          <v-text-field
+            v-model="search"
+            color="secondary"
+            append-icon="fa-search"
+            label="Search"
+            single-line
+            hide-details
+          ></v-text-field>
+        </v-card-title>
+        <v-data-table
+          v-model="favoritesSelected"
+          :headers="headers"
+          :items="favorites"
+          :search="search"
+          item-key="name"
+          show-select
+          class="elevation-1"
+        ></v-data-table>
       </v-card>
-      <v-btn
-        color="secondary"
-        @click="validate">
-        Continue
-      </v-btn>
-      <v-btn
-        color="secondary"
-        @click="cancel"
-        text>
-        Cancel
-      </v-btn>
-    </div>
+      <v-card elevation="0">
+        <v-card-title>
+          Keywords (Optional)
+          <v-spacer></v-spacer>
+          <v-text-field
+            v-model="currentKeyword"
+            color="secondary"
+            append-icon="fa-plus-square"
+            label="Add keyword"
+            single-line
+            hide-details
+            @click:append="addChip"
+            @keyup="addChipEnterKey"
+          ></v-text-field>
+        </v-card-title>
+        <v-chip
+          v-for="item in keywords"
+          :key="item"
+          @click:close="closeChip(item)"
+          class="ma-2"
+          close
+        >{{item}}</v-chip>
+      </v-card>
+    </form>
+    <v-card-actions>
+      <v-btn color="secondary" @click="validate">Continue</v-btn>
+      <v-btn color="secondary" @click="cancel" text>Cancel</v-btn>
+    </v-card-actions>
+  </v-card>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
-  data: function () {
+  computed: {
+    ...mapGetters('app', ['getDarkMode'])
+  },
+  data () {
     return {
       keywords: [],
       currentKeyword: '',
@@ -96,7 +90,7 @@ export default {
           price: 7668.85,
           outstanding: 18159712,
           volume: 26456005213,
-          hour: 0.30,
+          hour: 0.3,
           hour24: 4.93,
           week: 8.07
         },
@@ -142,13 +136,20 @@ export default {
       this.$emit('cancel', '2')
     },
     addChip () {
-      if (this.currentKeyword.trim() !== '' && !this.keywords.includes(this.currentKeyword)) {
+      if (
+        this.currentKeyword.trim() !== '' &&
+        !this.keywords.includes(this.currentKeyword)
+      ) {
         this.keywords.push(this.currentKeyword)
         this.currentKeyword = ''
       }
     },
     addChipEnterKey (e) {
-      if (this.currentKeyword.trim() !== '' && !this.keywords.includes(this.currentKeyword) && e.keyCode === 13) {
+      if (
+        this.currentKeyword.trim() !== '' &&
+        !this.keywords.includes(this.currentKeyword) &&
+        e.keyCode === 13
+      ) {
         this.keywords.push(this.currentKeyword.trim())
         this.currentKeyword = ''
       }
@@ -162,5 +163,4 @@ export default {
 </script>
 
 <style scoped>
-
 </style>

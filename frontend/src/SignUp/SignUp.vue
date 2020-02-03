@@ -1,5 +1,5 @@
 <template>
-  <v-stepper :vertical="vertical" v-model="elem">
+  <v-stepper :vertical="vertical" v-model="elem" :dark="getDarkMode">
     <v-stepper-step
       :key="`${1}-step`"
       :complete="elem > 1"
@@ -42,13 +42,17 @@
 import AccountInformation from './AccountInformation.vue'
 import FavoritesAndKeywords from './FavoritesAndKeywords'
 import SubmitConfirmation from './SubmitConfirmation'
+import { mapGetters } from 'vuex'
 export default {
   components: {
     SubmitConfirmation,
     FavoritesAndKeywords,
     AccountInformation
   },
-  data: function () {
+  computed: {
+    ...mapGetters('app', ['getDarkMode'])
+  },
+  data () {
     return {
       elem: 1,
       vertical: true,
@@ -82,7 +86,7 @@ export default {
     },
     onCancel (value) {
       if (value === '1') {
-        window.location.reload()
+        // window.location.reload()
       } else if (value === '2') {
         this.elem = 1
       } else if (value === '3') {
