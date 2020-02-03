@@ -120,9 +120,9 @@ router.get('/users/profile', authentication.isNotAnonymous, function (req, res, 
 });
 
 /*
-POST /users/profile
+PUT /users/profile
 */
-router.post('/users/profile', authentication.isNotAnonymous, function (req, res, next) {
+router.put('/users/profile', authentication.isNotAnonymous, function (req, res, next) {
     let id = authentication.idUserRecovered(req);
     const params = {
             email: req.body.email,
