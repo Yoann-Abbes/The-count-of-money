@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const client = require('../config/clientPg')
+const client = require('../config/clientPg');
 
 function errorQuery(e, res) {
     res.status(418).json({

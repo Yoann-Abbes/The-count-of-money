@@ -1,10 +1,17 @@
+import requester from '../service/requester'
+
 const state = {
   isLoading: false,
-  darkMode: false
+  darkMode: false,
+  baseApiUrl: 'http://localhost:5005'
 }
 
 const actions = {
-
+  init () {
+    if (localStorage.getItem('token') != null) {
+      requester.setHeader('Authorization', localStorage.getItem('token'))
+    }
+  }
 }
 
 const mutations = {
@@ -28,6 +35,9 @@ const getters = {
   },
   getDarkMode: (state) => {
     return state.darkMode
+  },
+  getBaseUrl: (state) => {
+    return state.baseApiUrl
   }
 }
 
