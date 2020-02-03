@@ -35,6 +35,7 @@
       :key="`${3}-content`"
       :step="3">
       <SubmitConfirmation @clicked="onClickSubmitConfirmation" @cancel="onCancel"></SubmitConfirmation>
+      <p style="color: red">{{msgErr}}</p>
     </v-stepper-content>
   </v-stepper>
 </template>
@@ -55,7 +56,8 @@ export default {
       editable: true,
       lazy: false,
       accountInformation: {},
-      favoritesAndKeywords: {}
+      favoritesAndKeywords: {},
+      ErrMsg: ''
     }
   },
   methods: {
@@ -67,7 +69,7 @@ export default {
       this.favoritesAndKeywords = value
       this.elem = 3
     },
-    onClickSubmitConfirmation () {
+    async onClickSubmitConfirmation () {
       let target = {
         is_admin: false,
         username: this.accountInformation.name,
@@ -78,7 +80,12 @@ export default {
         favorites_crypto: this.favoritesAndKeywords.favoritesSelected
       }
       this.elem = 4
-      console.log(target)
+      const responseCreate = await this.$store.dispatch('create/create', target)
+      if (responseCreate.status) {
+        this.$router('/LogIn')
+      } else {
+        this.ErrMsg = 'Error server, try again or reload the page'
+      }
     },
     onCancel (value) {
       if (value === '1') {
