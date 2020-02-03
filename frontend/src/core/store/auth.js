@@ -2,7 +2,6 @@ import Vue from 'vue'
 import requester from '../service/requester'
 
 const state = {
-  token: localStorage.getItem('token') || '',
   isLogged: false,
   user: {
     email: '',
@@ -20,7 +19,6 @@ const actions = {
       const responseLogin = await requester.get(ApiUrl)
       localStorage.setItem('token', responseLogin.headers.jwt)
       requester.setHeader('Authorization', responseLogin.headers.jwt)
-      commit('SET_TOKEN', responseLogin.headers.jwt)
       const responseGetProfile = await dispatch('getProfile')
       if (responseGetProfile.status) {
         commit('SET_IS_LOGGED', true)
@@ -48,20 +46,22 @@ const actions = {
 }
 
 const mutations = {
-  SET_TOKEN (state, token) {
-    state.token = token
+  SET_USER_INFORMATION (state, userValue) {
+    Vue.set(state, 'user', userValue)
   },
-  SET_USER_INFORMATION (state, resp) {
-    Vue.set(state, 'user', resp)
-  },
-  SET_IS_LOGGED (state, resp) {
-    state.isLogged = resp
+  SET_IS_LOGGED (state, value) {
+    console.log('islogged', value)
+
+    state.isLogged = value
   }
 }
 
 const getters = {
   getUser: (state) => {
     return state.user
+  },
+  getIsLogged: (state) => {
+    return state.isLogged
   }
 }
 

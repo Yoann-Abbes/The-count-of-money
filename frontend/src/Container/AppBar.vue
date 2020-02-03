@@ -20,9 +20,11 @@
     </router-link>
 
     <v-spacer></v-spacer>
+    <v-btn text to="/Home">Home</v-btn>
     <v-btn text to="/RssFlows">RSS</v-btn>
-    <v-btn text to="/SignUp">Sign Up</v-btn>
-    <v-btn text to="/LogIn">Log In</v-btn>
+    <v-btn text v-if="!getIsLogged" to="/SignUp">Sign Up</v-btn>
+    <v-btn text v-if="!getIsLogged" to="/LogIn">Log In</v-btn>
+    <v-btn text v-if="getIsLogged" >Logout</v-btn>
     <template v-if="$vuetify.breakpoint.smAndUp"></template>
   </v-app-bar>
 </template>
@@ -32,7 +34,8 @@ import { mapGetters } from 'vuex'
 
 export default {
   computed: {
-    ...mapGetters('app', ['getDarkMode'])
+    ...mapGetters('app', ['getDarkMode']),
+    ...mapGetters('auth', ['getIsLogged'])
   }
 }
 </script>

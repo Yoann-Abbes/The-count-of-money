@@ -9,8 +9,9 @@ const state = {
 
 const actions = {
   init: async ({ dispatch, commit }) => {
-    if (localStorage.getItem('token') != null) {
+    if (localStorage.getItem('token') !== null) {
       requester.setHeader('Authorization', localStorage.getItem('token'))
+      commit('auth/SET_IS_LOGGED', true, { root: true })
     }
     await dispatch('cryptoList/fetchCryptoList', null, { root: true })
     commit('SET_APP_INITIATED')
