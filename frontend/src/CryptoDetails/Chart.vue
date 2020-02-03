@@ -33,7 +33,7 @@ export default {
       handler (value) {
         this.$refs.candleChart.updateOptions({
           theme: {
-            mode: value ? 'dark' : 'ligth'
+            mode: value ? 'dark' : 'light'
           },
           chart: {
             background: value ? '#424242' : '#FAFAFA'
@@ -70,7 +70,7 @@ export default {
           }
         },
         theme: {
-          mode: this.getDarkMode ? 'dark' : 'ligth'
+          mode: this.getDarkMode ? 'dark' : 'light'
         }
       }
     }
