@@ -31,35 +31,29 @@ router.get('/cryptos', function (req, res, next) {
         .then(result1 => {
             const now = new Date()
             let a = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 1, 0, 0).getTime() / 1000
-            if (result1.rows.length === 0)
-                res.status(400).json({
-                    error: `No crypto matches symbols '${cmids}'`
-                })
-            else {
-                let GET_CRYPTO_HISTORY_BY_DAY_AND_ID = `SELECT * from CRYPTO_HISTORY WHERE period = 'daily' AND crypto_id IN ( SELECT id FROM CRYPTO_LIST ) AND timestamp = to_timestamp(${a})`
-                if (values !== "")
-                    GET_CRYPTO_HISTORY_BY_DAY_AND_ID = `SELECT * from CRYPTO_HISTORY WHERE period = 'daily' AND crypto_id IN ( SELECT id FROM CRYPTO_LIST WHERE symbol IN (${values})) AND timestamp = to_timestamp(${a})`
-                client
-                    .query(GET_CRYPTO_HISTORY_BY_DAY_AND_ID)
-                    .then(result2 => {
-                        result1.rows.forEach(elem1 => {
-                            result2.rows.forEach(elem2 => {
-                                if (elem1.id === elem2.crypto_id) {
-                                    elem1.openDay = elem2.open
-                                    elem1.highDay = elem2.high
-                                    elem1.lowDay = elem2.low
-                                    elem1.closeDay = elem2.close
-                                    elem1.price = elem2.price
-                                    delete elem1.id
-                                }
-                            });
+            let GET_CRYPTO_HISTORY_BY_DAY_AND_ID = `SELECT * from CRYPTO_HISTORY WHERE period = 'daily' AND crypto_id IN ( SELECT id FROM CRYPTO_LIST ) AND timestamp = to_timestamp(${a})`
+            if (values !== "")
+                GET_CRYPTO_HISTORY_BY_DAY_AND_ID = `SELECT * from CRYPTO_HISTORY WHERE period = 'daily' AND crypto_id IN ( SELECT id FROM CRYPTO_LIST WHERE symbol IN (${values})) AND timestamp = to_timestamp(${a})`
+            client
+                .query(GET_CRYPTO_HISTORY_BY_DAY_AND_ID)
+                .then(result2 => {
+                    result1.rows.forEach(elem1 => {
+                        result2.rows.forEach(elem2 => {
+                            if (elem1.id === elem2.crypto_id) {
+                                elem1.openDay = elem2.open
+                                elem1.highDay = elem2.high
+                                elem1.lowDay = elem2.low
+                                elem1.closeDay = elem2.close
+                                elem1.price = elem2.price
+                                delete elem1.id
+                            }
                         });
-                        res.json({
-                            data: result1.rows
-                        })
+                    });
+                    res.json({
+                        data: result1.rows
                     })
-                    .catch(e => errorQuery(e, res))
-            }
+                })
+                .catch(e => errorQuery(e, res))
         })
         .catch(e => errorQuery(e, res))
 });
