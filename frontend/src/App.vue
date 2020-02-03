@@ -1,10 +1,13 @@
 <template>
-  <v-app :style="{backgroundColor: getDarkMode? '#424242' : ''}">
+  <v-app :style="{backgroundColor: getDarkMode? '#424242' : ''}" v-if="getAppInitiated">
     <Overlay />
     <AppBar />
     <SideBar />
-    <v-content class="ma-5" v-if="getAppInitiated">
+    <v-content class="ma-5">
       <router-view></router-view>
+      <v-snackbar :color="getSnackBarType" v-model="getSnackBarDisplayed">
+        {{ getSnackBarText }}
+      </v-snackbar>
     </v-content>
   </v-app>
 </template>
@@ -24,7 +27,10 @@ export default {
   },
   computed: {
     ...mapGetters('app', ['getDarkMode']),
-    ...mapGetters('app', ['getAppInitiated'])
+    ...mapGetters('app', ['getAppInitiated']),
+    ...mapGetters('app', ['getSnackBarDisplayed']),
+    ...mapGetters('app', ['getSnackBarText']),
+    ...mapGetters('app', ['getSnackBarType'])
   },
   mounted () {
     this.$store.dispatch('app/init')

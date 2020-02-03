@@ -1,5 +1,5 @@
 <template>
-  <v-data-table :items-per-page="5" :headers="headers" :items="items" class="elevation-1" :dark="getDarkMode">
+  <v-data-table :items-per-page="10" :headers="headers" :items="items" class="elevation-1" :dark="getDarkMode">
     <template v-slot:item.logo="{ item }">
       <v-list-item-icon>
         <v-img :src="item.logo" aspect-ratio="1" />

@@ -86,7 +86,7 @@ export default {
       this.elem = 4
       const responseCreate = await this.$store.dispatch('create/create', target)
       if (responseCreate.status) {
-        this.$router('/LogIn')
+        this.$router.push('/LogIn')
       } else {
         this.ErrMsg = 'Error server, try again or reload the page'
       }

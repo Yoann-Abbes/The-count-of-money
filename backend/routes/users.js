@@ -63,7 +63,7 @@ mandatory query params:
 optional query params:
     /
 */
-router.get('/users/login', authentication.isAnonymous, function (req, res, next) {
+router.get('/users/login', function (req, res, next) {
     const email = req.query.email,
         password = req.query.password,
         badValues = [null, undefined, ""];

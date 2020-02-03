@@ -18,7 +18,7 @@ CREATE TABLE RSS_HISTORY (
     creator VARCHAR(255),
     pubDate TIMESTAMP,
     categories VARCHAR(500) [],
-    FOREIGN KEY (rss_list_id) REFERENCES RSS_LIST
+    FOREIGN KEY (rss_list_id) REFERENCES RSS_LIST(id)
 );
 
 DROP TABLE IF EXISTS CRYPTO_LIST CASCADE;
@@ -40,7 +40,7 @@ CREATE TABLE CRYPTO_HISTORY (
     high FLOAT,
     low FLOAT,
     close FLOAT,
-    FOREIGN KEY (crypto_id) REFERENCES CRYPTO_LIST
+    FOREIGN KEY (crypto_id) REFERENCES CRYPTO_LIST(id)
 );
 SET timezone = 'America/Los_Angeles';
 

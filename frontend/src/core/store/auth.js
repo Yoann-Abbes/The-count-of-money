@@ -13,6 +13,11 @@ const state = {
 }
 
 const actions = {
+  async logout ({ commit }) {
+    commit('RESET_USER')
+    commit('SET_IS_LOGGED', false)
+    localStorage.removeItem('token')
+  },
   async create ({ dispatch, rootGetters }, user) {
     const ApiUrl = rootGetters['app/getBaseUrl'] + '/users/register'
     try {
@@ -32,6 +37,7 @@ const actions = {
       const responseGetProfile = await dispatch('getProfile')
       if (responseGetProfile.status) {
         commit('SET_IS_LOGGED', true)
+        dispatch('app/showSnackBar', { text: `Welcome back ${responseGetProfile.message.username} !`, type: 'success' }, { root: true })
         return { status: true, message: 'login and profile loading complete' }
       } else {
         commit('SET_IS_LOGGED', false)
@@ -56,12 +62,20 @@ const actions = {
 }
 
 const mutations = {
+  RESET_USER (state) {
+    const user = {
+      email: '',
+      username: '',
+      picture_url: '',
+      keyword: [],
+      favorites_crypto: []
+    }
+    Vue.set(state, 'user', user)
+  },
   SET_USER_INFORMATION (state, userValue) {
     Vue.set(state, 'user', userValue)
   },
   SET_IS_LOGGED (state, value) {
-    console.log('islogged', value)
-
     state.isLogged = value
   }
 }
@@ -69,6 +83,15 @@ const mutations = {
 const getters = {
   getUser: (state) => {
     return state.user
+  },
+  getUsername: (state) => {
+    return state.user.username
+  },
+  getUserPicture: (state) => {
+    return state.user.picture_url
+  },
+  getUserEmail: (state) => {
+    return state.user.email
   },
   getIsLogged: (state) => {
     return state.isLogged
