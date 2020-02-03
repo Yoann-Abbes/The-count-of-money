@@ -223,7 +223,7 @@ const loadUsers = async () => {
         await loadUsers();
         MULTI_BAR.stop()
     } catch (error) {
-        console.log("errrrr", error.message);
+        console.log("\n\nerrrrr", error);
     } finally {
         client.end();
     }
