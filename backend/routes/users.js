@@ -83,7 +83,7 @@ router.get('/users/login', function (req, res, next) {
                     // TODO JWT
                     // JWT must contain userID => user.id
                     res.header({
-                        'JWT': "jwt"
+                        JWT: "jwt"
                     }).sendStatus(200)
                     return
                 }

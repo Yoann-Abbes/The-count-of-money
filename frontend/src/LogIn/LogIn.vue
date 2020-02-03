@@ -61,7 +61,6 @@ export default {
         password: this.password
       }
       const responseLogin = await this.$store.dispatch('auth/login', target)
-      console.log(responseLogin)
       this.msgErr = responseLogin.message
       if (responseLogin.status) {
         this.msgErrColor = 'green'
