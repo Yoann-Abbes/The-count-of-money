@@ -5,6 +5,7 @@ import app from './app'
 import auth from './auth'
 import cryptoList from './cryptoList'
 import cryptoHistory from './cryptoHistory'
+import adminPreference from './adminPreference'
 
 const debug = process.env.NODE_ENV !== 'production'
 
@@ -15,7 +16,8 @@ export default new Vuex.Store({
     app,
     auth,
     cryptoHistory,
-    cryptoList
+    cryptoList,
+    adminPreference
   },
   strict: debug
 })

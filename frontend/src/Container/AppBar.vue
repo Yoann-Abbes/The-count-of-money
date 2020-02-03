@@ -20,6 +20,7 @@
     </div>
 
     <v-spacer></v-spacer>
+    <v-btn text to="/Admin">Admin</v-btn>
     <v-btn text to="/RssFlows">RSS</v-btn>
     <v-btn text to="/SignUp">Sign Up</v-btn>
     <v-btn text to="/LogIn">Log In</v-btn>

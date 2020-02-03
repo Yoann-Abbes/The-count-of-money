@@ -18,8 +18,9 @@ const actions = {
     const ApiUrl = rootGetters['app/getBaseUrl'] + '/users/login?email=' + user.email + '&password=' + user.password
     try {
       const responseLogin = await requester.get(ApiUrl)
-      localStorage.setItem('token', responseLogin.headers.jwt)
-      // requester.setHeader('Authorization', responseLogin.headers.jwt)
+      console.log(responseLogin.headers.jwt)
+      // localStorage.setItem('token', responseLogin.headers.jwt)
+      requester.setHeader('JWT', responseLogin.headers.jwt)
       commit('SET_TOKEN', responseLogin.headers.jwt)
       const responseGetProfile = await dispatch('getProfile')
       if (responseGetProfile.status) {
