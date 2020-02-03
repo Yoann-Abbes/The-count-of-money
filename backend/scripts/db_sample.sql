@@ -58,7 +58,7 @@ CREATE TABLE USERS (
 
 INSERT INTO USERS VALUES (
     nextval('users_id_seq'),
-    false,
+    true,
     'yoann.abbes@gmail.com',
     'testmdp',
     'testuser',
@@ -69,7 +69,7 @@ INSERT INTO USERS VALUES (
 
 INSERT INTO USERS VALUES (
     nextval('users_id_seq'),
-    false,
+    true,
     'yoann1.abbes@epitech.eu',
     'testmdp2',
     'testuser2',
