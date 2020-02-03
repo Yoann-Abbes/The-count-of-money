@@ -27,6 +27,7 @@
                 type="password"
                 required>
               </v-text-field>
+              <p v-bind:style="{ color: msgErrColor }">{{msgErr}}</p>
               <v-btn
                 color="secondary"
                 type="submit">
@@ -48,16 +49,25 @@ export default {
   data: function () {
     return {
       email: '',
-      password: ''
+      password: '',
+      msgErr: '',
+      msgErrColor: 'None'
     }
   },
   methods: {
-    loginUser () {
+    async loginUser () {
       let target = {
         email: this.email,
         password: this.password
       }
-      console.log(target)
+      const responseLogin = await this.$store.dispatch('auth/login', target)
+      this.msgErr = responseLogin.message
+      if (responseLogin.status) {
+        this.msgErrColor = 'green'
+        // TODO redirection home page
+      } else {
+        this.msgErrColor = 'red'
+      }
     }
   }
 }
