@@ -19,7 +19,7 @@ const actions = {
     try {
       const responseLogin = await requester.get(ApiUrl)
       localStorage.setItem('token', responseLogin.headers.jwt)
-      // requester.setHeader('Authorization', responseLogin.headers.jwt)
+      requester.setHeader('Authorization', responseLogin.headers.jwt)
       commit('SET_TOKEN', responseLogin.headers.jwt)
       const responseGetProfile = await dispatch('getProfile')
       if (responseGetProfile.status) {

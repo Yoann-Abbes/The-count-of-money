@@ -79,9 +79,9 @@ export default {
     }
   },
   async mounted () {
-    this.$store.commit('app/SET_LOADING')
-    await this.getFeeds()
-    this.$store.commit('app/UNSET_LOADING')
+    // this.$store.commit('app/SET_LOADING')
+    // await this.getFeeds()
+    // this.$store.commit('app/UNSET_LOADING')
   },
   computed: {
     ...mapGetters('app', ['getDarkMode']),
