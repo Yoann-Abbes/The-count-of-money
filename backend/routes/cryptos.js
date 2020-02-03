@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const client = require('../config/clientPg')
+const client = require('../config/clientPg');
+const authentication = require('../middleware/authentication');
 
 function errorQuery(e, res) {
     res.status(418).json({
@@ -64,7 +65,7 @@ examples:
     - /cryptos/BTC
     - /cryptos/XRP
 */
-router.get('/cryptos/:cmid', function (req, res, next) {
+router.get('/cryptos/:cmid', authentication.isNotAnonymous, function (req, res, next) {
     const cmid = req.params.cmid,
         GET_CRYPTO_WHERE_SYMBOL = `SELECT * from CRYPTO_LIST WHERE symbol = '${cmid}'`;
     client
@@ -110,7 +111,7 @@ examples:
     - /cryptos/XRP/history/hourly
     - /cryptos/ETH/history/daily
  */
-router.get('/cryptos/:cmid/history/:period', function (req, res, next) {
+router.get('/cryptos/:cmid/history/:period', authentication.isNotAnonymous, function (req, res, next) {
     const cmid = req.params.cmid,
         period = req.params.period,
         validPeriod = ['daily', 'hourly', 'minute'];
@@ -145,7 +146,7 @@ body params to give:
     "picture_url": "https://www.cryptocompare.com/media/20559/wolf.png"
 }
 */
-router.post('/cryptos', function (req, res, next) {
+router.post('/cryptos', authentication.isAdmin, function (req, res, next) {
     const symbol = req.body.symbol,
         fullname = req.body.fullname,
         picture_url = req.body.picture_url;
@@ -183,7 +184,7 @@ examples:
     - /cryptos/BTC
     - /cryptos/ETH
 */
-router.delete('/cryptos/:cmid', function (req, res, next) {
+router.delete('/cryptos/:cmid', authentication.isAdmin, function (req, res, next) {
     const cmid = req.params.cmid,
         GET_CRYPTO_BY_ID = `SELECT id FROM CRYPTO_LIST WHERE symbol = '${cmid}'`,
         id_list = new Set();
