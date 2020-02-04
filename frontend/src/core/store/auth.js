@@ -81,6 +81,12 @@ const mutations = {
 }
 
 const getters = {
+  getKeywords: (state) => {
+    return state.user.keyword
+  },
+  getFavouriteCrypto: (state) => {
+    return state.user.favorites_crypto
+  },
   getUser: (state) => {
     return state.user
   },

@@ -1,13 +1,30 @@
 <template>
   <v-container fluid dark>
     <v-row>
-      <v-col cols="12" align="center" justify="center" dark>
+      <v-col cols="12" align="center" justify="center" :dark="getDarkMode">
         <p :class="`display-3 ${getDarkMode? 'white' : 'black'}--text `">RSS FEEDS</p>
       </v-col>
     </v-row>
     <v-row>
-      <v-col cols="12">
-        <v-text-field :dark="getDarkMode" v-model="searchString" label="Type something to search..."></v-text-field>
+      <v-col cols="6">
+        <v-text-field
+          :dark="getDarkMode"
+          v-model="searchString"
+          label="Type something to search..."
+        ></v-text-field>
+      </v-col>
+      <v-col cols="6">
+        <v-combobox
+          :dark="getDarkMode"
+          v-model="selectedKeywords"
+          :items="getKeywords"
+          :label="getLabel"
+          multiple
+          clearable
+          persistent-hint
+          small-chips
+          outlined
+        ></v-combobox>
       </v-col>
     </v-row>
     <v-row>
@@ -51,38 +68,65 @@ export default {
   data () {
     return {
       limit: 5,
-      searchString: ''
+      searchString: '',
+      selectedKeywords: []
     }
   },
   async mounted () {
     this.$store.commit('app/SET_LOADING')
     await this.$store.dispatch('rss/fetchRssArticles')
     this.$store.commit('app/UNSET_LOADING')
+    this.selectedKeywords = this.getKeywords
   },
   computed: {
     ...mapGetters('app', ['getDarkMode']),
+    ...mapGetters('auth', ['getKeywords']),
+    ...mapGetters('auth', ['getIsLogged']),
     ...mapGetters('rss', ['getArticles']),
+    getLabel () {
+      if (this.selectedKeywords.length !== 0) {
+        return 'Warning, some keywords are activated. You might not see all last published articles.'
+      } else {
+        return 'You can select some keywords to filter the last published articles.'
+      }
+    },
     filteredFeeds () {
-      if (
-        !this.searchString ||
-        this.searchString === '' ||
-        this.searchString === null ||
-        this.searchString === undefined
-      ) {
+      if (this.searchString === '' && this.selectedKeywords.length === 0) {
         return this.getArticles
       }
       const filtered = JSON.parse(JSON.stringify(this.getArticles))
-      for (const feed of Object.keys(filtered)) {
-        filtered[feed].items = filtered[feed].items.filter(item => {
-          for (const category of item.categories) {
-            if (category.includes(this.searchString)) {
-              return true
+      if (this.selectedKeywords.length !== 0) {
+        for (const feed of Object.keys(filtered)) {
+          filtered[feed].items = filtered[feed].items.filter(item => {
+            for (const category of item.categories) {
+              for (const keyword of this.selectedKeywords) {
+                if (category.includes(keyword)) {
+                  return true
+                }
+              }
             }
+            return false
+          })
+          if (filtered[feed].items.length === 0) {
+            delete filtered[feed]
           }
-          return false
-        })
-        if (filtered[feed].items.length === 0) {
-          delete filtered[feed]
+        }
+      }
+      if (this.searchString !== '') {
+        for (const feed of Object.keys(filtered)) {
+          filtered[feed].items = filtered[feed].items.filter(item => {
+            if (item.content.includes(this.searchString)) return true
+            if (item.title.includes(this.searchString)) return true
+            for (const category of item.categories) {
+              if (category.includes(this.searchString)) {
+                return true
+              }
+            }
+            return false
+          })
+          if (filtered[feed].items.length === 0) {
+            delete filtered[feed]
+          }
         }
       }
       return filtered
