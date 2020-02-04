@@ -2,16 +2,16 @@ import requester from '../service/requester'
 import Vue from 'vue'
 
 const state = {
-  cryptos: []
+  articles: []
 }
 
 const actions = {
-  fetchCryptoList: async ({ commit, rootGetters }) => {
+  fetchRssArticles: async ({ commit, rootGetters }) => {
     const baseUrl = rootGetters['app/getBaseUrl']
-    const ApiUrl = baseUrl + '/cryptos'
+    const ApiUrl = baseUrl + '/articles'
     try {
       const resp = await requester.get(ApiUrl)
-      commit('SET_CRYPTOS', resp.data.data)
+      commit('SET_ARTICLES', resp.data.data)
     } catch (error) {
       console.log(error.message)
     }
@@ -19,17 +19,14 @@ const actions = {
 }
 
 const mutations = {
-  SET_CRYPTOS: (state, cryptos) => {
-    Vue.set(state, 'cryptos', cryptos)
+  SET_ARTICLES: (state, articles) => {
+    Vue.set(state, 'articles', articles)
   }
 }
 
 const getters = {
-  getCryptoBySymbol: (state) => (currency) => {
-    return state.cryptos.find(c => c.symbol === currency)
-  },
-  getCryptos: (state) => {
-    return state.cryptos
+  getArticles: (state) => {
+    return state.articles
   }
 }
 

@@ -2,16 +2,32 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import CryptoDetails from '@/CryptoDetails/CryptoDetails.vue'
 import RssFlows from '@/RssFlows/RssFlows.vue'
-import LogIn from '../../LogIn/LogIn'
-import SignUp from '../../SignUp/SignUp'
-import Admin from '../../Admin/Admin'
+import Admin from '@/Admin/Admin'
+import LogIn from '@/LogIn/LogIn'
+import SignUp from '@/SignUp/SignUp'
+import Home from '@/Home/Home'
+import store from '@/core/store'
 
 Vue.use(VueRouter)
+
+const authenticationGuard = (to, from, next) => {
+  if (store.getters['auth/getIsLogged']) {
+    next()
+  } else {
+    store.dispatch('app/showSnackBar', { text: 'You must be logged to access this part', type: 'warning' })
+    next('/')
+  }
+}
 
 const routes = [
   {
     path: '/',
-    redirect: '/RssFlows'
+    redirect: '/Home'
+  },
+  {
+    path: '/Home',
+    name: 'Home',
+    component: Home
   },
   {
     path: '/RssFlows',
@@ -21,7 +37,8 @@ const routes = [
   {
     path: '/CryptoDetails/:currency',
     name: 'CryptoDetails',
-    component: CryptoDetails
+    component: CryptoDetails,
+    beforeEnter: authenticationGuard
   },
   {
     path: '/LogIn',

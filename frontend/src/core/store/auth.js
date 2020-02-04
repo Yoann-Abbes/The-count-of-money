@@ -2,7 +2,6 @@ import Vue from 'vue'
 import requester from '../service/requester'
 
 const state = {
-  token: localStorage.getItem('token') || '',
   isLogged: false,
   user: {
     email: '',
@@ -14,6 +13,11 @@ const state = {
 }
 
 const actions = {
+  async logout ({ commit }) {
+    commit('RESET_USER')
+    commit('SET_IS_LOGGED', false)
+    localStorage.removeItem('token')
+  },
   async create ({ dispatch, rootGetters }, user) {
     const ApiUrl = rootGetters['app/getBaseUrl'] + '/users/register'
     try {
@@ -28,13 +32,12 @@ const actions = {
     const ApiUrl = rootGetters['app/getBaseUrl'] + '/users/login?email=' + user.email + '&password=' + user.password
     try {
       const responseLogin = await requester.get(ApiUrl)
-      console.log(responseLogin.headers.jwt)
-      // localStorage.setItem('token', responseLogin.headers.jwt)
-      requester.setHeader('JWT', responseLogin.headers.jwt)
-      commit('SET_TOKEN', responseLogin.headers.jwt)
+      localStorage.setItem('token', responseLogin.headers.jwt)
+      requester.setHeader('Authorization', responseLogin.headers.jwt)
       const responseGetProfile = await dispatch('getProfile')
       if (responseGetProfile.status) {
         commit('SET_IS_LOGGED', true)
+        dispatch('app/showSnackBar', { text: `Welcome back ${responseGetProfile.message.username} !`, type: 'success' }, { root: true })
         return { status: true, message: 'login and profile loading complete' }
       } else {
         commit('SET_IS_LOGGED', false)
@@ -59,20 +62,39 @@ const actions = {
 }
 
 const mutations = {
-  SET_TOKEN (state, token) {
-    state.token = token
+  RESET_USER (state) {
+    const user = {
+      email: '',
+      username: '',
+      picture_url: '',
+      keyword: [],
+      favorites_crypto: []
+    }
+    Vue.set(state, 'user', user)
   },
-  SET_USER_INFORMATION (state, resp) {
-    Vue.set(state, 'user', resp)
+  SET_USER_INFORMATION (state, userValue) {
+    Vue.set(state, 'user', userValue)
   },
-  SET_IS_LOGGED (state, resp) {
-    state.isLogged = resp
+  SET_IS_LOGGED (state, value) {
+    state.isLogged = value
   }
 }
 
 const getters = {
   getUser: (state) => {
     return state.user
+  },
+  getUsername: (state) => {
+    return state.user.username
+  },
+  getUserPicture: (state) => {
+    return state.user.picture_url
+  },
+  getUserEmail: (state) => {
+    return state.user.email
+  },
+  getIsLogged: (state) => {
+    return state.isLogged
   }
 }
 
