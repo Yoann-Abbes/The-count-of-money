@@ -13,17 +13,21 @@ function errorQuery(e, res) {
 /*
 GET /articles[?params1=value1&. . . ]
 */
-router.get('/articles', function (req, res, next) {
-    const GET_RSS_RSS_HISTORY = "SELECT * from RSS_HISTORY";
-
-    client
-        .query(GET_RSS_RSS_HISTORY)
-        .then(result => {
-            res.json({
-                data: result.rows
-            })
-        })
-        .catch(e => errorQuery(e, res))
+router.get('/articles', async (req, res, next) => {
+    const GET_RSS_LIST = `SELECT * from RSS_LIST`;
+    const rssList = await client.query(GET_RSS_LIST);
+    const results = {}
+    for (const rssFeed of rssList.rows) {
+        const GET_RSS_RSS_HISTORY = `SELECT * from RSS_HISTORY WHERE rss_list_id = ${rssFeed.id};`
+        let items = await client.query(GET_RSS_RSS_HISTORY);
+        results[rssFeed.name] = {
+            items: items.rows,
+            title: rssFeed.name
+        }
+    }
+    res.json({
+        data: results
+    })
 });
 
 /*

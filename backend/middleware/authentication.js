@@ -2,9 +2,9 @@ const jwt = require('jsonwebtoken');
 
 module.exports = {
     isAuthorized: function(req, res, next) {
-        if (typeof req.headers.jwt !== "undefined") {
+        if (typeof req.headers.authorization !== "undefined") {
             // Token recovering and parse out the header
-            let token = req.headers.jwt;
+            let token = req.headers.authorization;
             
             // JSON Web Token validation
             jwt.verify(token, process.env.JWT_KEY, (err, client) => {
@@ -24,7 +24,7 @@ module.exports = {
     },
 
     idUserRecovered: function(req, res, next) {
-            let token = req.headers.jwt,
+            let token = req.headers.authorization,
                 decoded;
             try {
                 decoded = jwt.verify(token, process.env.JWT_KEY);
@@ -36,8 +36,8 @@ module.exports = {
 
     // Check if the user is an admin
     isAdmin: function(req, res, next) {
-        if (typeof req.headers.jwt !== "undefined") {
-            let token = req.headers.jwt,
+        if (typeof req.headers.authorization !== "undefined") {
+            let token = req.headers.authorization,
                 decoded;
             try {
                 decoded = jwt.verify(token, process.env.JWT_KEY);
@@ -57,7 +57,7 @@ module.exports = {
 
     // Check if the user is not anonymous, he can be a logged user or an admin
     isNotAnonymous: function(req, res, next) {
-        if (typeof req.headers.jwt !== "undefined") {
+        if (typeof req.headers.authorization !== "undefined") {
             return next();
         } else {
             return res.status(401).send('Unauthorized');
@@ -66,7 +66,7 @@ module.exports = {
 
     // Check if the user has no already a token for login
     isAnonymous: function(req, res, next) {
-        if (typeof req.headers.jwt !== "undefined") {
+        if (typeof req.headers.authorization !== "undefined") {
             return res.status(401).send('Already logged');
         } else {
             return next();
