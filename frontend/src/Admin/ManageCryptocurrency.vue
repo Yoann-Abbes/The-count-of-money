@@ -1,7 +1,7 @@
-<template xmlns:v-slot="http://www.w3.org/1999/XSL/Transform">
-  <v-card elevation="0">
+<template>
+  <v-card elevation="0" :dark="getDarkMode">
     <v-card-title>
-      Favorite Crypto Currency
+      Crypto Currencies
       <v-spacer></v-spacer>
       <v-text-field
         v-model="search"
@@ -13,19 +13,21 @@
       ></v-text-field>
     </v-card-title>
     <v-data-table
+      :dark="getDarkMode"
       :headers="headers"
-      :items="favorites"
+      :items="getCryptoList"
       :search="search"
       item-key="id"
-      class="elevation-1">
+      class="elevation-1"
+    >
       <template v-slot:top>
-        <v-toolbar flat color="white">
+        <v-toolbar flat :dark="getDarkMode">
           <v-spacer></v-spacer>
           <v-dialog v-model="dialog" max-width="500px">
             <template v-slot:activator="{ on }">
-              <v-btn color="primary" dark class="mb-2" v-on="on">New Crypto Currency</v-btn>
+              <v-btn :dark="getDarkMode" class="mb-2" v-on="on">New Crypto Currency</v-btn>
             </template>
-            <v-card>
+            <v-card :dark="getDarkMode">
               <v-card-title>
                 <span class="headline">New Crypto Currency</span>
               </v-card-title>
@@ -35,12 +37,6 @@
                   <v-row>
                     <v-col cols="12" sm="6" md="4">
                       <v-text-field v-model="editedCrypto.symbol" label="Symbol"></v-text-field>
-                    </v-col>
-                    <v-col cols="12" sm="6" md="4">
-                      <v-text-field v-model="editedCrypto.fullname" label="Full name"></v-text-field>
-                    </v-col>
-                    <v-col cols="12" sm="6" md="4">
-                      <v-text-field v-model="editedCrypto.picture_url" label="picture url"></v-text-field>
                     </v-col>
                   </v-row>
                 </v-container>
@@ -56,37 +52,23 @@
         </v-toolbar>
       </template>
       <template v-slot:item.picture_url="{ item }">
-        <v-img
-          alt="ICON"
-          class="shrink mr-2"
-          contain
-          :src="item.picture_url"
-          width="25">
-        </v-img>
+        <v-img alt="ICON" class="shrink mr-2" contain :src="item.picture_url" width="25"></v-img>
       </template>
       <template v-slot:item.action="{ item }">
-        <v-icon
-          small
-          @click="deleteC(item)">
-          fa-trash
-        </v-icon>
+        <v-icon small @click="deleteCrypto(item)">fa-trash</v-icon>
       </template>
     </v-data-table>
   </v-card>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
   data: function () {
     return {
       search: '',
       headers: [
-        {
-          text: '#',
-          align: 'left',
-          sortable: false,
-          value: 'id'
-        },
         { text: 'Icon', value: 'picture_url' },
         { text: 'Symbol', value: 'symbol' },
         { text: 'Full Name', value: 'fullname' },
@@ -94,9 +76,7 @@ export default {
       ],
       dialog: false,
       editedCrypto: {
-        symbol: '',
-        fullname: '',
-        picture_url: ''
+        symbol: ''
       }
     }
   },
@@ -104,9 +84,8 @@ export default {
     await this.$store.dispatch('adminPreference/getCryptoList')
   },
   computed: {
-    favorites () {
-      return this.$store.state.adminPreference.cryptoList
-    }
+    ...mapGetters('app', ['getDarkMode']),
+    ...mapGetters('adminPreference', ['getCryptoList'])
   },
   watch: {
     dialog (val) {
@@ -115,24 +94,54 @@ export default {
   },
   methods: {
     async save () {
-      const resp = await this.$store.dispatch('adminPreference/setCrypto', this.editedCrypto)
-      console.log(resp)
-      this.close()
+      this.$store.commit('app/SET_LOADING')
+      const res = await this.$store.dispatch(
+        'adminPreference/setCrypto',
+        this.editedCrypto
+      )
+      if (res) {
+        this.close()
+        this.$store.dispatch('app/showSnackBar', {
+          text: `${this.editedCrypto.symbol} successfully added!`,
+          type: 'success'
+        })
+        this.$store.commit('app/UNSET_LOADING')
+      } else {
+        this.$store.dispatch('app/showSnackBar', {
+          text: `An error occured when adding ${this.editedCrypto.symbol}!`,
+          type: 'warning'
+        })
+        this.close()
+        this.$store.commit('app/UNSET_LOADING')
+      }
     },
-    async deleteC (item) {
-      // const resp = await this.$store.dispatch('adminPreference/deleteCrypto', item.symbol)
-      console.log(item.symbol)
+    async deleteCrypto (item) {
+      this.$store.commit('app/SET_LOADING')
+      const resp = await this.$store.dispatch(
+        'adminPreference/deleteCrypto',
+        item.symbol
+      )
+      if (resp) {
+        this.$store.dispatch('app/showSnackBar', {
+          text: `${item.symbol} successfully deleted!`,
+          type: 'success'
+        })
+        this.$store.commit('app/UNSET_LOADING')
+      } else {
+        this.$store.dispatch('app/showSnackBar', {
+          text: `An error occured when deleting ${item.symbol}!`,
+          type: 'warning'
+        })
+        this.$store.commit('app/UNSET_LOADING')
+      }
     },
     close () {
       this.dialog = false
       this.editedCrypto.symbol = ''
-      this.editedCrypto.fullname = ''
-      this.editedCrypto.picture_url = ''
     }
   }
 }
 </script>
 
 <style scoped>
-
 </style>

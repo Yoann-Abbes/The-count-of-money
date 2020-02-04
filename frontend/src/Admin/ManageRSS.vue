@@ -1,7 +1,7 @@
-<template xmlns:v-slot="http://www.w3.org/1999/XSL/Transform">
-  <v-card elevation="0">
+<template>
+  <v-card elevation="0" :dark="getDarkMode">
     <v-card-title>
-      Favorite RSS link
+      RSS link
       <v-spacer></v-spacer>
       <v-text-field
         v-model="search"
@@ -17,13 +17,14 @@
       :items="favorites"
       :search="search"
       item-key="id"
-      class="elevation-1">
+      class="elevation-1"
+    >
       <template v-slot:top>
-        <v-toolbar flat color="white">
+        <v-toolbar flat :dark="getDarkMode">
           <v-spacer></v-spacer>
           <v-dialog v-model="dialog" max-width="500px">
             <template v-slot:activator="{ on }">
-              <v-btn color="primary" dark class="mb-2" v-on="on">New RSS link</v-btn>
+              <v-btn class="mb-2" v-on="on">New RSS link</v-btn>
             </template>
             <v-card>
               <v-card-title>
@@ -52,28 +53,20 @@
         </v-toolbar>
       </template>
       <template v-slot:item.action="{ item }">
-        <v-icon
-          small
-          @click="deleteC(item)">
-          fa-trash
-        </v-icon>
+        <v-icon small @click="deleteC(item)">fa-trash</v-icon>
       </template>
     </v-data-table>
   </v-card>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
-  data: function () {
+  data () {
     return {
       search: '',
       headers: [
-        {
-          text: '#',
-          align: 'left',
-          sortable: false,
-          value: 'id'
-        },
         { text: 'Name', value: 'name' },
         { text: 'Url', value: 'link' },
         { text: 'Actions', value: 'action', sortable: false }
@@ -89,6 +82,7 @@ export default {
     await this.$store.dispatch('adminPreference/getRSSList')
   },
   computed: {
+    ...mapGetters('app', ['getDarkMode']),
     favorites () {
       return this.$store.state.adminPreference.rssList
     }
@@ -100,13 +94,43 @@ export default {
   },
   methods: {
     async save () {
-      const resp = await this.$store.dispatch('adminPreference/setRSS', this.editedRSS)
-      console.log(resp)
+      this.$store.commit('app/SET_LOADING')
+      const resp = await this.$store.dispatch(
+        'adminPreference/setRSS',
+        this.editedRSS
+      )
+      if (resp) {
+        this.close()
+        this.$store.dispatch('app/showSnackBar', {
+          text: `${this.editedRSS.name} successfully added!`,
+          type: 'success'
+        })
+        this.$store.commit('app/UNSET_LOADING')
+      } else {
+        this.$store.dispatch('app/showSnackBar', {
+          text: `An error occured when adding ${this.editedRSS.name}!`,
+          type: 'warning'
+        })
+        this.close()
+        this.$store.commit('app/UNSET_LOADING')
+      }
       this.close()
     },
     async deleteC (item) {
-      // const resp = await this.$store.dispatch('adminPreference/deleteRSS', item.name)
-      console.log(item.name)
+      const resp = await this.$store.dispatch('adminPreference/deleteRSS', item.id)
+      if (resp) {
+        this.$store.dispatch('app/showSnackBar', {
+          text: `${item.name} successfully deleted!`,
+          type: 'success'
+        })
+        this.$store.commit('app/UNSET_LOADING')
+      } else {
+        this.$store.dispatch('app/showSnackBar', {
+          text: `An error occured when deleting ${item.name}!`,
+          type: 'warning'
+        })
+        this.$store.commit('app/UNSET_LOADING')
+      }
     },
     close () {
       this.dialog = false
@@ -118,5 +142,4 @@ export default {
 </script>
 
 <style scoped>
-
 </style>

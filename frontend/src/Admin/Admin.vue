@@ -1,7 +1,7 @@
 <template>
   <v-container>
-    <ManageCryptocurrency></ManageCryptocurrency>
-    <ManageRSS></ManageRSS>
+    <ManageCryptocurrency />
+    <ManageRSS />
   </v-container>
 </template>
 

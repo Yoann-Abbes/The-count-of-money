@@ -65,6 +65,7 @@ const actions = {
 const mutations = {
   RESET_USER (state) {
     const user = {
+      is_admin: false,
       email: '',
       username: '',
       picture_url: '',

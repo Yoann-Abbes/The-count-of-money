@@ -6,6 +6,16 @@ const state = {
 }
 
 const actions = {
+  async deleteCrypto ({ dispatch, rootGetters }, symbol) {
+    const ApiUrl = rootGetters['app/getBaseUrl'] + `/cryptos/${symbol}`
+    try {
+      await requester.delete(ApiUrl)
+      await dispatch('getCryptoList')
+      return true
+    } catch (error) {
+      return false
+    }
+  },
   async getCryptoList ({ commit, rootGetters }) {
     const ApiUrl = rootGetters['app/getBaseUrl'] + '/cryptos'
     try {
@@ -18,12 +28,11 @@ const actions = {
   async setCrypto ({ commit, dispatch, rootGetters }, data) {
     const ApiUrl = rootGetters['app/getBaseUrl'] + '/cryptos'
     try {
-      const resp = await requester.post(ApiUrl, data)
-      console.log(resp)
-      const resp2 = await dispatch('getCryptoList')
-      console.log(resp2)
+      await requester.post(ApiUrl, data)
+      await dispatch('getCryptoList')
+      return true
     } catch (error) {
-      console.log(error)
+      return false
     }
   },
   async getRSSList ({ commit, rootGetters }) {
@@ -35,15 +44,24 @@ const actions = {
       console.log(error)
     }
   },
-  async setRSS ({ commit, dispatch, rootGetters }, data) {
+  async deleteRSS ({ dispatch, rootGetters }, id) {
+    const ApiUrl = rootGetters['app/getBaseUrl'] + `/rss/${id}`
+    try {
+      await requester.delete(ApiUrl)
+      await dispatch('getRSSList')
+      return true
+    } catch (error) {
+      return false
+    }
+  },
+  async setRSS ({ dispatch, rootGetters }, data) {
     const ApiUrl = rootGetters['app/getBaseUrl'] + '/rss'
     try {
-      const resp = await requester.post(ApiUrl, data)
-      console.log(resp)
-      const resp2 = await dispatch('getRSSList')
-      console.log(resp2)
+      await requester.post(ApiUrl, data)
+      await dispatch('getRSSList')
+      return true
     } catch (error) {
-      console.log(error)
+      return false
     }
   }
 }
@@ -58,6 +76,12 @@ const mutations = {
 }
 
 const getters = {
+  getCryptoList (state) {
+    return state.cryptoList
+  },
+  getRssList (state) {
+    return state.rssList
+  }
 }
 
 export default {
