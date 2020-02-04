@@ -7,7 +7,13 @@
       <v-col cols="7" dark>
         <p class="p-0 m-0 display-3 font-weight-black">{{title}}</p>
       </v-col>
-      <v-col cols="4">
+      <v-col cols="2">
+        <v-btn
+          :dark="getDarkMode"
+          @click="toggleRealtime"
+        >{{realTimeEnabled? 'Disable realtime' : 'Enable realtime'}}</v-btn>
+      </v-col>
+      <v-col cols="2">
         <v-select :items="periods" v-model="period" label="Period" :dark="getDarkMode" />
       </v-col>
     </v-row>
@@ -31,7 +37,9 @@ export default {
   data () {
     return {
       period: 'minute',
-      periods: ['minute', 'hourly', 'daily']
+      periods: ['minute', 'hourly', 'daily'],
+      realTimeEnabled: true,
+      intervalId: null
     }
   },
   computed: {
@@ -56,12 +64,26 @@ export default {
       })
     }
   },
-  mounted () {
+  async mounted () {
+    await this.$store.commit('app/SET_LOADING')
     this.fetchNewHistory()
+    this.intervalId = setInterval(() => {
+      this.fetchNewHistory()
+    }, 60000)
   },
   methods: {
+    toggleRealtime () {
+      this.realTimeEnabled = !this.realTimeEnabled
+      if (this.realTimeEnabled) {
+        this.intervalId = setInterval(() => {
+          this.fetchNewHistory()
+        }, 60000)
+      } else {
+        clearInterval(this.intervalId)
+        this.intervalId = null
+      }
+    },
     async fetchNewHistory () {
-      await this.$store.commit('app/SET_LOADING')
       await this.$store.dispatch(
         'cryptoHistory/fetchAllPeriodHistory',
         this.currency
@@ -71,6 +93,7 @@ export default {
   watch: {
     '$route.params.currency': {
       async handler () {
+        await this.$store.commit('app/SET_LOADING')
         this.fetchNewHistory()
       }
     }

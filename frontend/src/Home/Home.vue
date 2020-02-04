@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <v-row>
+    <v-row v-if="getIsLogged">
       <v-col cols="12">
         <v-btn :dark="getDarkMode" link @click="onlyFavourite = !onlyFavourite">{{getButtonText}}</v-btn>
       </v-col>
@@ -34,7 +34,17 @@ import { mapGetters } from 'vuex'
 export default {
   data () {
     return {
-      onlyFavourite: true
+      onlyFavourite: false
+    }
+  },
+  mounted () {
+    this.onlyFavourite = this.getIsLogged
+  },
+  watch: {
+    getIsLogged: {
+      handler (value) {
+        this.onlyFavourite = value
+      }
     }
   },
   computed: {
@@ -76,8 +86,8 @@ export default {
           color: this.getColor(crypto),
           dayVariation: this.getVariation(crypto)
         }
-      }).filter((crypto, index) => {
-        return this.onlyFavourite ? this.getFavouriteCrypto.includes(index.toString()) : true
+      }).filter(crypto => {
+        return this.onlyFavourite ? this.getFavouriteCrypto.includes(crypto.id.toString()) : true
       })
     }
   },
