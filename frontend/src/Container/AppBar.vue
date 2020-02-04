@@ -20,6 +20,7 @@
     </router-link>
 
     <v-spacer></v-spacer>
+    <v-btn text to="/Admin">Admin</v-btn>
     <v-btn text to="/Home">Home</v-btn>
     <v-btn text to="/RssFlows">RSS</v-btn>
     <v-btn text v-if="!getIsLogged" to="/SignUp">Sign Up</v-btn>
