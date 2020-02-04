@@ -19,6 +19,15 @@ const authenticationGuard = (to, from, next) => {
   }
 }
 
+const adminGuard = (to, from, next) => {
+  if (store.getters['auth/getIsAdmin']) {
+    next()
+  } else {
+    store.dispatch('app/showSnackBar', { text: 'You must be admin to access this part', type: 'warning' })
+    next('/')
+  }
+}
+
 const routes = [
   {
     path: '/',
@@ -53,7 +62,8 @@ const routes = [
   {
     path: '/Admin',
     name: 'Admin',
-    component: Admin
+    component: Admin,
+    beforeEnter: adminGuard
   }
 ]
 
