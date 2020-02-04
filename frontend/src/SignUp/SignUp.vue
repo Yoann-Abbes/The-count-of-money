@@ -1,5 +1,5 @@
 <template>
-  <v-stepper :vertical="vertical" v-model="elem">
+  <v-stepper :vertical="vertical" v-model="elem" :dark="getDarkMode">
     <v-stepper-step
       :key="`${1}-step`"
       :complete="elem > 1"
@@ -35,6 +35,7 @@
       :key="`${3}-content`"
       :step="3">
       <SubmitConfirmation @clicked="onClickSubmitConfirmation" @cancel="onCancel"></SubmitConfirmation>
+      <p style="color: red">{{msgErr}}</p>
     </v-stepper-content>
   </v-stepper>
 </template>
@@ -42,20 +43,25 @@
 import AccountInformation from './AccountInformation.vue'
 import FavoritesAndKeywords from './FavoritesAndKeywords'
 import SubmitConfirmation from './SubmitConfirmation'
+import { mapGetters } from 'vuex'
 export default {
   components: {
     SubmitConfirmation,
     FavoritesAndKeywords,
     AccountInformation
   },
-  data: function () {
+  computed: {
+    ...mapGetters('app', ['getDarkMode'])
+  },
+  data () {
     return {
       elem: 1,
       vertical: true,
       editable: true,
       lazy: false,
       accountInformation: {},
-      favoritesAndKeywords: {}
+      favoritesAndKeywords: {},
+      ErrMsg: ''
     }
   },
   methods: {
@@ -67,7 +73,7 @@ export default {
       this.favoritesAndKeywords = value
       this.elem = 3
     },
-    onClickSubmitConfirmation () {
+    async onClickSubmitConfirmation () {
       let target = {
         is_admin: false,
         username: this.accountInformation.name,
@@ -78,11 +84,16 @@ export default {
         favorites_crypto: this.favoritesAndKeywords.favoritesSelected
       }
       this.elem = 4
-      console.log(target)
+      const responseCreate = await this.$store.dispatch('create/create', target)
+      if (responseCreate.status) {
+        this.$router.push('/LogIn')
+      } else {
+        this.ErrMsg = 'Error server, try again or reload the page'
+      }
     },
     onCancel (value) {
       if (value === '1') {
-        window.location.reload()
+        // window.location.reload()
       } else if (value === '2') {
         this.elem = 1
       } else if (value === '3') {

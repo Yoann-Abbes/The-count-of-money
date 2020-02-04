@@ -45,46 +45,23 @@
 </template>
 
 <script>
-import Vue from 'vue'
 import { mapGetters } from 'vuex'
 
 export default {
   data () {
     return {
       limit: 5,
-      rssUrls: [
-        {
-          url: 'https://bitcoin.fr/feed/',
-          name: 'BitCoin'
-        },
-        {
-          url: 'https://cryptogains.fr/feed',
-          name: 'CryptoGains'
-        },
-        {
-          url: 'https://cryptonaute.fr/feed/',
-          name: 'CryptoNaute'
-        },
-        {
-          url: 'https://news.crypto-analyse.com/feed/',
-          name: 'CryptoAnalyse'
-        },
-        {
-          url: 'https://cryptoactu.com/feed/',
-          name: 'CryptoActu'
-        }
-      ],
-      rssFeeds: {},
       searchString: ''
     }
   },
   async mounted () {
     this.$store.commit('app/SET_LOADING')
-    await this.getFeeds()
+    await this.$store.dispatch('rss/fetchRssArticles')
     this.$store.commit('app/UNSET_LOADING')
   },
   computed: {
     ...mapGetters('app', ['getDarkMode']),
+    ...mapGetters('rss', ['getArticles']),
     filteredFeeds () {
       if (
         !this.searchString ||
@@ -92,9 +69,9 @@ export default {
         this.searchString === null ||
         this.searchString === undefined
       ) {
-        return this.rssFeeds
+        return this.getArticles
       }
-      const filtered = JSON.parse(JSON.stringify(this.rssFeeds))
+      const filtered = JSON.parse(JSON.stringify(this.getArticles))
       for (const feed of Object.keys(filtered)) {
         filtered[feed].items = filtered[feed].items.filter(item => {
           for (const category of item.categories) {
@@ -109,26 +86,6 @@ export default {
         }
       }
       return filtered
-    }
-  },
-  methods: {
-    async getFeeds () {
-      let Parser = require('rss-parser')
-      let parser = new Parser()
-      const CORS_PROXY = 'https://cors-anywhere.herokuapp.com/'
-      for (const rss of this.rssUrls) {
-        try {
-          await parser.parseURL(CORS_PROXY + rss.url, async (err, feed) => {
-            if (err) throw err
-            for (const item of feed.items) {
-              item.content = item.content.replace('[ ]', '[...]')
-            }
-            Vue.set(this.rssFeeds, rss.name, feed)
-          })
-        } catch (error) {
-          console.log('FAILED TO FETCH RSS', error.message)
-        }
-      }
     }
   }
 }

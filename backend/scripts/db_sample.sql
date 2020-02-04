@@ -18,7 +18,7 @@ CREATE TABLE RSS_HISTORY (
     creator VARCHAR(255),
     pubDate TIMESTAMP,
     categories VARCHAR(500) [],
-    FOREIGN KEY (rss_list_id) REFERENCES RSS_LIST
+    FOREIGN KEY (rss_list_id) REFERENCES RSS_LIST(id)
 );
 
 DROP TABLE IF EXISTS CRYPTO_LIST CASCADE;
@@ -40,7 +40,7 @@ CREATE TABLE CRYPTO_HISTORY (
     high FLOAT,
     low FLOAT,
     close FLOAT,
-    FOREIGN KEY (crypto_id) REFERENCES CRYPTO_LIST
+    FOREIGN KEY (crypto_id) REFERENCES CRYPTO_LIST(id)
 );
 SET timezone = 'America/Los_Angeles';
 
@@ -54,43 +54,4 @@ CREATE TABLE USERS (
     picture_url TEXT,
     keyword VARCHAR(500) [],
     favorites_crypto BIGINT []
-);
-
-INSERT INTO USERS VALUES (
-    nextval('users_id_seq'),
-    true,
-    'yoann.abbes@gmail.com',
-    'testmdp',
-    'testuser',
-    'http://osef.com',
-    ARRAY ['bitcoin', 'etherum'],
-    ARRAY [1, 2]
-);
-
-INSERT INTO USERS VALUES (
-    nextval('users_id_seq'),
-    true,
-    'yoann1.abbes@epitech.eu',
-    'testmdp2',
-    'testuser2',
-    'http://osef2.com',
-    ARRAY ['bitcoin', 'etherum'],
-    ARRAY [1, 2]
-);
-
-INSERT INTO RSS_LIST (link, name) VALUES (
-    'https://bitcoin.fr/feed/',
-    'BitCoin'
-),(
-    'https://cryptogains.fr/feed',
-    'CryptoGains'
-),(
-    'https://cryptonaute.fr/feed/',
-    'CryptoNaute'
-),(
-    'https://news.crypto-analyse.com/feed/',
-    'CryptoAnalyse'
-),(
-    'https://cryptoactu.com/feed/',
-    'CryptoActu'
 );
