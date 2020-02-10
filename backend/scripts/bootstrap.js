@@ -64,6 +64,8 @@ const getCryptoList = async () => {
 
 // GET EACH CRYPTO VALUES FOR 60 LAST DAYS
 const getCryptosDays = async () => {
+    // console.log(await client.query('SELECT * FROM crypto_list;'))
+
     let cryptoDaysQuery = 'INSERT INTO crypto_history (crypto_id, period, timestamp, open, high, low, close) VALUES \n';
     const cryptoDaysBar = MULTI_BAR.create(NUMBER_OF_DAYS * SELECTED_CRYPTOS.length, 0, { filename: "Crypto Days values   " });
 

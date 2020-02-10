@@ -14,6 +14,27 @@ const state = {
 }
 
 const actions = {
+  async updateUserInfos ({ commit, rootGetters }, values) {
+    const ApiUrl = rootGetters['app/getBaseUrl'] + '/users/profile'
+
+    try {
+      await requester.put(ApiUrl, {
+        username: values.newUsername,
+        keyword: values.newKeywords,
+        favorites_crypto: values.newFavorites
+      })
+      commit('SET_USER_INFORMATION', {
+        email: state.user.email,
+        username: values.newUsername,
+        picture_url: state.user.picture_url,
+        keyword: values.newKeywords,
+        favorites_crypto: values.newFavorites
+      })
+      return { status: true, message: 'OK' }
+    } catch (error) {
+      return { status: false, message: error.message }
+    }
+  },
   async logout ({ commit }) {
     commit('RESET_USER')
     commit('SET_IS_LOGGED', false)
@@ -83,6 +104,12 @@ const mutations = {
 }
 
 const getters = {
+  getKeywords: (state) => {
+    return state.user.keyword
+  },
+  getFavouriteCrypto: (state) => {
+    return state.user.favorites_crypto
+  },
   getUser: (state) => {
     return state.user
   },

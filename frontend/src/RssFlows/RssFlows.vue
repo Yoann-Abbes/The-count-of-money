@@ -1,13 +1,30 @@
 <template>
   <v-container fluid dark>
     <v-row>
-      <v-col cols="12" align="center" justify="center" dark>
+      <v-col cols="12" align="center" justify="center" :dark="getDarkMode">
         <p :class="`display-3 ${getDarkMode? 'white' : 'black'}--text `">RSS FEEDS</p>
       </v-col>
     </v-row>
     <v-row>
-      <v-col cols="12">
-        <v-text-field :dark="getDarkMode" v-model="searchString" label="Type something to search..."></v-text-field>
+      <v-col cols="6">
+        <v-text-field
+          :dark="getDarkMode"
+          v-model="searchString"
+          label="Type something to search..."
+        ></v-text-field>
+      </v-col>
+      <v-col cols="6" v-if="getIsLogged">
+        <v-combobox
+          :dark="getDarkMode"
+          v-model="selectedKeywords"
+          :items="getKeywords"
+          :label="getLabel"
+          multiple
+          clearable
+          persistent-hint
+          small-chips
+          outlined
+        ></v-combobox>
       </v-col>
     </v-row>
     <v-row>
@@ -51,36 +68,81 @@ export default {
   data () {
     return {
       limit: 5,
-      searchString: ''
+      searchString: '',
+      selectedKeywords: []
     }
   },
   async mounted () {
     this.$store.commit('app/SET_LOADING')
     await this.$store.dispatch('rss/fetchRssArticles')
     this.$store.commit('app/UNSET_LOADING')
+    this.selectedKeywords = this.getKeywords
+  },
+  watch: {
+    getKeywords: {
+      handler () {
+        this.selectedKeywords = this.getKeywords
+      }
+    }
+  },
+  methods: {
+    sanitize (text) {
+      return text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    },
+    itemIsShowed (item) {
+      const content = this.sanitize(item.content)
+      const title = this.sanitize(item.title)
+      let sanitizeKeyword = ''
+      let sanitizedCategory = ''
+      const searchString = this.sanitize(this.searchString)
+
+      if (this.searchString !== '') {
+        if (content.includes(searchString)) return true
+        if (title.includes(searchString)) return true
+        for (const category of item.categories) {
+          sanitizedCategory = this.sanitize(category)
+          if (sanitizedCategory.includes(searchString)) {
+            return true
+          }
+        }
+        return false
+      }
+
+      if (this.selectedKeywords.length !== 0) {
+        for (const keyword of this.selectedKeywords) {
+          sanitizeKeyword = this.sanitize(keyword)
+          if (content.includes(sanitizeKeyword)) return true
+          if (title.includes(sanitizeKeyword)) return true
+          for (const category of item.categories) {
+            sanitizedCategory = this.sanitize(category)
+            if (sanitizedCategory.includes(sanitizeKeyword)) {
+              return true
+            }
+          }
+        }
+      }
+      return false
+    }
   },
   computed: {
     ...mapGetters('app', ['getDarkMode']),
+    ...mapGetters('auth', ['getKeywords']),
+    ...mapGetters('auth', ['getIsLogged']),
     ...mapGetters('rss', ['getArticles']),
+    getLabel () {
+      if (this.selectedKeywords.length !== 0) {
+        return 'Warning, some keywords are activated. You might not see all last published articles.'
+      } else {
+        return 'You can select some keywords to filter the last published articles.'
+      }
+    },
     filteredFeeds () {
-      if (
-        !this.searchString ||
-        this.searchString === '' ||
-        this.searchString === null ||
-        this.searchString === undefined
-      ) {
+      if (this.searchString === '' && this.selectedKeywords.length === 0) {
         return this.getArticles
       }
       const filtered = JSON.parse(JSON.stringify(this.getArticles))
       for (const feed of Object.keys(filtered)) {
-        filtered[feed].items = filtered[feed].items.filter(item => {
-          for (const category of item.categories) {
-            if (category.includes(this.searchString)) {
-              return true
-            }
-          }
-          return false
-        })
+        filtered[feed].items = filtered[feed].items.filter(item => this.itemIsShowed(item))
         if (filtered[feed].items.length === 0) {
           delete filtered[feed]
         }

@@ -6,6 +6,7 @@ import Admin from '@/Admin/Admin'
 import LogIn from '@/LogIn/LogIn'
 import SignUp from '@/SignUp/SignUp'
 import Home from '@/Home/Home'
+import Preferences from '@/Preferences/Preferences'
 import store from '@/core/store'
 
 Vue.use(VueRouter)
@@ -32,6 +33,12 @@ const routes = [
   {
     path: '/',
     redirect: '/Home'
+  },
+  {
+    path: '/Preferences',
+    name: 'Preferences',
+    component: Preferences,
+    beforeEnter: authenticationGuard
   },
   {
     path: '/Home',

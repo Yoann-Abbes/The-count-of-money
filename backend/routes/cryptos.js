@@ -50,7 +50,6 @@ router.get('/cryptos', async (req, res, next) => {
         crypto.lowDay = history.low
         crypto.closeDay = history.close
         crypto.price = history.price
-        delete crypto.id
         return crypto
     });
     res.json({

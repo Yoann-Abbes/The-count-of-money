@@ -1,6 +1,15 @@
 import axios from 'axios'
 
 export default {
+  put (url, body) {
+    if (body) {
+      return axios
+        .put(url, body)
+    } else {
+      return axios
+        .put(url)
+    }
+  },
   get (url, body) {
     if (body) {
       return axios
