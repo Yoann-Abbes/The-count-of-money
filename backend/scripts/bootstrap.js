@@ -1,4 +1,3 @@
-const { exec } = require("child_process");
 const axios = require('axios');
 const { Client } = require('pg');
 const cliProgress = require('cli-progress');
@@ -49,7 +48,9 @@ const getCryptoList = async () => {
     const cryptoListBar = MULTI_BAR.create(SELECTED_CRYPTOS.length, 0, { filename: "Crypto List          " });
 
     const cryptoListResponse = await axios.get(coinListUrl);
+    
     for (const [index, crypto] of SELECTED_CRYPTOS.entries()) {
+        
         cryptoListBar.update(index + 1);
         imageUrl = `https://www.cryptocompare.com/${cryptoListResponse.data.Data[crypto].ImageUrl}`;
         fullName = cryptoListResponse.data.Data[crypto].CoinName;
@@ -66,7 +67,6 @@ const getCryptosDays = async () => {
     // console.log(await client.query('SELECT * FROM crypto_list;'))
 
     let cryptoDaysQuery = 'INSERT INTO crypto_history (crypto_id, period, timestamp, open, high, low, close) VALUES \n';
-
     const cryptoDaysBar = MULTI_BAR.create(NUMBER_OF_DAYS * SELECTED_CRYPTOS.length, 0, { filename: "Crypto Days values   " });
 
     for (const [index, crypto] of SELECTED_CRYPTOS.entries()) {
@@ -206,16 +206,25 @@ const loadUsers = async () => {
     };
 };
 
+function execShellCommand(cmd) {
+    const exec = require('child_process').exec;
+    return new Promise((resolve, reject) => {
+     exec(cmd, (error, stdout, stderr) => {
+      if (error) {
+       console.warn(error);
+      }
+      resolve(stdout? stdout : stderr);
+     });
+    });
+   }
 
 (async () => {
     try {
-        await exec(`PGPASSWORD=${argv.password} psql -h localhost -U postgres -f db_sample.sql`, (err) => {
-            if (err) console.log('EROOOOOOOOOOOOR', err);
-        })
+        console.log("Reseting DATABASE...");
+        await execShellCommand(`PGPASSWORD=${argv.password} psql -h localhost -U postgres -f db_sample.sql`)
         console.log("DATABASE successfully reseted");
-        
         client.connect();
-
+        
         await getCryptoList();
         await getCryptosDays();
         await getCryptosHours();

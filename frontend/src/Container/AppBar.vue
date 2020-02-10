@@ -20,6 +20,7 @@
     </router-link>
 
     <v-spacer></v-spacer>
+    <v-btn text v-if="getIsAdmin" to="/Admin">Admin</v-btn>
     <v-btn text to="/Home">Home</v-btn>
     <v-btn text to="/RssFlows">RSS</v-btn>
     <v-btn text v-if="!getIsLogged" to="/SignUp">Sign Up</v-btn>
@@ -35,7 +36,8 @@ import { mapGetters } from 'vuex'
 export default {
   computed: {
     ...mapGetters('app', ['getDarkMode']),
-    ...mapGetters('auth', ['getIsLogged'])
+    ...mapGetters('auth', ['getIsLogged']),
+    ...mapGetters('auth', ['getIsAdmin'])
   },
   methods: {
     logout () {
