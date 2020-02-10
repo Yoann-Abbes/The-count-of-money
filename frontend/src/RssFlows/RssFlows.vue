@@ -111,7 +111,7 @@ export default {
       if (this.selectedKeywords.length !== 0) {
         for (const keyword of this.selectedKeywords) {
           sanitizeKeyword = this.sanitize(keyword)
-          if (content.include(sanitizeKeyword)) return true
+          if (content.includes(sanitizeKeyword)) return true
           if (title.includes(sanitizeKeyword)) return true
           for (const category of item.categories) {
             sanitizedCategory = this.sanitize(category)

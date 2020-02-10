@@ -71,6 +71,10 @@ export default {
       this.fetchNewHistory()
     }, 60000)
   },
+  beforeDestroy () {
+    clearInterval(this.intervalId)
+    this.intervalId = null
+  },
   methods: {
     toggleRealtime () {
       this.realTimeEnabled = !this.realTimeEnabled
