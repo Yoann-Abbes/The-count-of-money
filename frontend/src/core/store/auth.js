@@ -4,6 +4,7 @@ import requester from '../service/requester'
 const state = {
   isLogged: false,
   user: {
+    is_admin: false,
     email: '',
     username: '',
     picture_url: '',
@@ -64,6 +65,7 @@ const actions = {
 const mutations = {
   RESET_USER (state) {
     const user = {
+      is_admin: false,
       email: '',
       username: '',
       picture_url: '',
@@ -95,6 +97,9 @@ const getters = {
   },
   getIsLogged: (state) => {
     return state.isLogged
+  },
+  getIsAdmin: (state) => {
+    return state.user.is_admin
   }
 }
 

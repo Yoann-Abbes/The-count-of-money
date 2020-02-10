@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const client = require('../config/clientPg');
 const authentication = require('../middleware/authentication');
-
+const axios = require('axios')
 function errorQuery(e, res) {
     res.status(418).json({
         error: `bdd request failed`,
@@ -145,36 +145,79 @@ body params to give:
     "picture_url": "https://www.cryptocompare.com/media/20559/wolf.png"
 }
 */
-router.post('/cryptos', authentication.isAdmin, function (req, res, next) {
-    const symbol = req.body.symbol,
-        fullname = req.body.fullname,
-        picture_url = req.body.picture_url;
+router.post('/cryptos', authentication.isAdmin, async (req, res, next) => {
+    const symbol = req.body.symbol;
     [null, undefined, ""].forEach(element => {
-        if ([symbol, fullname, picture_url].includes(element)) {
+        if ([symbol].includes(element)) {
             res.status(400).end()
             return
         }
     });
+    
+    const coinListUrl = `https://min-api.cryptocompare.com/data/all/coinlist`;
+    const cryptoListResponse = await axios.get(coinListUrl);
+
+    if (!cryptoListResponse.data.Data[symbol]) {
+        res.status(400).json({
+            error: `The'${symbol}' crypto isn't available`
+        })
+    }
+    
+    const picture_url = `https://www.cryptocompare.com/${cryptoListResponse.data.Data[symbol].ImageUrl}`;
+    const fullname = cryptoListResponse.data.Data[symbol].CoinName;
+    
 
     let GET_CRYPTO_HISTORY_BY_ID = `SELECT * FROM CRYPTO_LIST WHERE symbol = '${symbol}'`;
-    client
-        .query(GET_CRYPTO_HISTORY_BY_ID)
-        .then(result => {
-            if (result.rows.length === 0) {
-                let INSERT_NEW_CRYPTO = `INSERT INTO CRYPTO_LIST (symbol, fullname, picture_url) VALUES ('${symbol}', '${fullname}', '${picture_url}')`;
-                client
-                    .query(INSERT_NEW_CRYPTO)
-                    .then(result2 => {
-                        res.sendStatus(200)
-                    })
-                    .catch(e => errorQuery(e, res))
-            } else {
-                res.status(400).json({
-                    error: `crypto '${symbol}' already added`
-                })
+    try {
+        const result = await client.query(GET_CRYPTO_HISTORY_BY_ID)
+        if (result.rows.length === 0) {
+            let INSERT_NEW_CRYPTO = `INSERT INTO CRYPTO_LIST (symbol, fullname, picture_url) VALUES ('${symbol}', '${fullname}', '${picture_url}')`;
+            try {
+                await client.query(INSERT_NEW_CRYPTO)
+            } catch (error) {
+                errorQuery(error, res)
             }
-        })
-        .catch(e => errorQuery(e, res))
+        } else {
+            res.status(400).json({
+                error: `crypto '${symbol}' already added`
+            })
+        }
+    } catch (error) {
+        errorQuery(error, res)
+    }
+
+    try {
+    const getId = await client.query(`SELECT * FROM CRYPTO_LIST WHERE symbol = '${symbol}';`)
+    const id = getId.rows[0].id
+
+    const APIKEY = 'd9a6b09f786d982185dbd38590dca29de06be1e5239482bbba0b249241948838'
+    let cryptoQuery = 'INSERT INTO crypto_history (crypto_id, period, timestamp, open, high, low, close) VALUES \n';
+    const cryptoDaysUrl = `https://min-api.cryptocompare.com/data/v2/histoday?fsym=${symbol}&tsym=EUR&limit=60&api_key=${APIKEY}`;
+    const cryptoHoursUrl = `https://min-api.cryptocompare.com/data/v2/histohour?fsym=${symbol}&tsym=EUR&limit=48&api_key=${APIKEY}`;
+    const cryptoMinutsUrl = `https://min-api.cryptocompare.com/data/v2/histominute?fsym=${symbol}&tsym=EUR&limit=120&api_key=${APIKEY}`;
+
+    const cryptoDaysResponse = await axios.get(cryptoDaysUrl);
+    const days = cryptoDaysResponse.data.Data.Data;
+    for (const day of days) {
+        cryptoQuery += `('${id}', 'daily', to_timestamp(${day.time}), '${day.open}', '${day.high}', '${day.low}', '${day.close}'),\n`;
+    }
+    const cryptoHoursResponse = await axios.get(cryptoHoursUrl);
+    const hours = cryptoHoursResponse.data.Data.Data;
+    for (const hour of hours) {
+        cryptoQuery += `('${id}', 'hourly', to_timestamp(${hour.time}), '${hour.open}', '${hour.high}', '${hour.low}', '${hour.close}'),\n`;
+    }
+    const cryptoMinutsResponse = await axios.get(cryptoMinutsUrl);
+    const minutes = cryptoMinutsResponse.data.Data.Data;
+    for (const minute of minutes) {
+        cryptoQuery += `('${id}', 'minute', to_timestamp(${minute.time}), '${minute.open}', '${minute.high}', '${minute.low}', '${minute.close}'),\n`;
+    }
+    cryptoQuery = cryptoQuery.slice(0, -2);
+    cryptoQuery += ';';
+    await client.query(cryptoQuery)
+    res.sendStatus(200)
+    } catch (error) {
+        errorQuery(error, res)   
+    }
 });
 
 /* DELETE a cryptocurrency of the platform

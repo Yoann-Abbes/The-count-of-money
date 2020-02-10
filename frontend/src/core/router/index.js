@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import CryptoDetails from '@/CryptoDetails/CryptoDetails.vue'
 import RssFlows from '@/RssFlows/RssFlows.vue'
+import Admin from '@/Admin/Admin'
 import LogIn from '@/LogIn/LogIn'
 import SignUp from '@/SignUp/SignUp'
 import Home from '@/Home/Home'
@@ -14,6 +15,15 @@ const authenticationGuard = (to, from, next) => {
     next()
   } else {
     store.dispatch('app/showSnackBar', { text: 'You must be logged to access this part', type: 'warning' })
+    next('/')
+  }
+}
+
+const adminGuard = (to, from, next) => {
+  if (store.getters['auth/getIsAdmin']) {
+    next()
+  } else {
+    store.dispatch('app/showSnackBar', { text: 'You must be admin to access this part', type: 'warning' })
     next('/')
   }
 }
@@ -48,6 +58,12 @@ const routes = [
     path: '/SignUp',
     name: 'SignUp',
     component: SignUp
+  },
+  {
+    path: '/Admin',
+    name: 'Admin',
+    component: Admin,
+    beforeEnter: adminGuard
   }
 ]
 

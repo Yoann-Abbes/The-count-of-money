@@ -113,7 +113,6 @@ router.get('/users/profile', authentication.isNotAnonymous, function (req, res, 
         .query(GET_USERS_WHERE_ID)
         .then(result => {
             delete result.rows[0].id
-            delete result.rows[0].is_admin
             res.status(200).json(result.rows[0])
         })
         .catch(e => errorQuery(e, res))

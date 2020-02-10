@@ -19,7 +19,7 @@ export default {
         .post(url)
     }
   },
-  del (url) {
+  delete (url) {
     return axios
       .delete(url)
   },
