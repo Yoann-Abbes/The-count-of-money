@@ -33,7 +33,7 @@ router.get('/cryptos', async (req, res, next) => {
     }
 
     const now = new Date()
-    let a = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 1, 0, 0).getTime() / 1000
+    let a = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0).getTime() / 1000
     let GET_CRYPTO_HISTORY_BY_DAY_AND_ID = `SELECT * from CRYPTO_HISTORY WHERE period = 'daily' AND crypto_id IN ( SELECT id FROM CRYPTO_LIST ) AND timestamp = to_timestamp(${a})`
     if (values !== "")
         GET_CRYPTO_HISTORY_BY_DAY_AND_ID = `SELECT * from CRYPTO_HISTORY WHERE period = 'daily' AND crypto_id IN ( SELECT id FROM CRYPTO_LIST WHERE symbol IN (${values})) AND timestamp = to_timestamp(${a})`
@@ -70,7 +70,7 @@ router.get('/cryptos/:cmid', authentication.isNotAnonymous, function (req, res, 
         .query(GET_CRYPTO_WHERE_SYMBOL)
         .then(result1 => {
             let now = new Date()
-            let a = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 1, 0, 0).getTime() / 1000
+            let a = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0).getTime() / 1000
             if (result1.rows.length === 0)
                 res.status(400).json({
                     error: `No crypto matches symbols '${cmid}'`

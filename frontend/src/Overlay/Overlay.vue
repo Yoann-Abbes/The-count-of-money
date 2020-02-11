@@ -19,7 +19,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 @-webkit-keyframes rotating /* Safari and Chrome */ {
   from {
     -webkit-transform: rotateY(0deg);

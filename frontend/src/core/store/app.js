@@ -3,7 +3,7 @@ import requester from '../service/requester'
 const state = {
   isLoading: false,
   darkMode: false,
-  baseApiUrl: 'http://localhost:5005',
+  baseApiUrl: process.env.NODE_ENV === 'production' ? 'http://18.219.19.141:5005' : 'http://localhost:5005',
   appInitiated: false,
   snackBarDisplayed: false,
   snackBarText: '',

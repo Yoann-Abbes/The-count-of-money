@@ -24,6 +24,7 @@ const actions = {
         favorites_crypto: values.newFavorites
       })
       commit('SET_USER_INFORMATION', {
+        is_admin: state.user.is_admin,
         email: state.user.email,
         username: values.newUsername,
         picture_url: state.user.picture_url,
