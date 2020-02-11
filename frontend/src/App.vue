@@ -37,3 +37,7 @@ export default {
   }
 }
 </script>
+
+<style lang="scss">
+@import "@/core/styles/index.scss";
+</style>
