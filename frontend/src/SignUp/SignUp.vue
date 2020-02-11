@@ -84,7 +84,7 @@ export default {
         favorites_crypto: this.favoritesAndKeywords.favoritesSelected
       }
       this.elem = 4
-      const responseCreate = await this.$store.dispatch('create/create', target)
+      const responseCreate = await this.$store.dispatch('auth/create', target)
       if (responseCreate.status) {
         this.$router.push('/LogIn')
       } else {
