@@ -87,7 +87,7 @@ export default {
           dayVariation: this.getVariation(crypto)
         }
       }).filter(crypto => {
-        return this.onlyFavourite ? this.getFavouriteCrypto.includes(crypto.id.toString()) : true
+        return this.onlyFavourite && this.getFavouriteCrypto ? this.getFavouriteCrypto.includes(crypto.id.toString()) : true
       })
     }
   },

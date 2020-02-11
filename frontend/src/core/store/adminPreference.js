@@ -11,12 +11,13 @@ const actions = {
     try {
       await requester.delete(ApiUrl)
       await dispatch('getCryptoList')
+      await dispatch('cryptoList/fetchCryptoList', null, { root: true })
       return true
     } catch (error) {
       return false
     }
   },
-  async getCryptoList ({ commit, rootGetters }) {
+  async getCryptoList ({ commit, rootGetters, dispatch }) {
     const ApiUrl = rootGetters['app/getBaseUrl'] + '/cryptos'
     try {
       const resp = await requester.get(ApiUrl)
@@ -30,6 +31,7 @@ const actions = {
     try {
       await requester.post(ApiUrl, data)
       await dispatch('getCryptoList')
+      await dispatch('cryptoList/fetchCryptoList', null, { root: true })
       return true
     } catch (error) {
       return false
@@ -49,6 +51,7 @@ const actions = {
     try {
       await requester.delete(ApiUrl)
       await dispatch('getRSSList')
+      await dispatch('rss/fetchRssArticles', null, { root: true })
       return true
     } catch (error) {
       return false
@@ -59,6 +62,7 @@ const actions = {
     try {
       await requester.post(ApiUrl, data)
       await dispatch('getRSSList')
+      await dispatch('rss/fetchRssArticles', null, { root: true })
       return true
     } catch (error) {
       return false

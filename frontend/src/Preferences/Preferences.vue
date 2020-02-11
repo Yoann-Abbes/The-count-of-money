@@ -136,7 +136,7 @@ export default {
     }
   },
   mounted () {
-    this.keywords = this.getKeywords
+    this.keywords = this.getKeywords || []
     this.favoritesSelected = this.items.filter(crypto => {
       return this.getFavouriteCrypto.includes(crypto.id.toString())
     })

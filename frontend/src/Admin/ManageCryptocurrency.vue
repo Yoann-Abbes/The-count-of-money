@@ -1,16 +1,21 @@
 <template>
   <v-card elevation="0" :dark="getDarkMode">
     <v-card-title>
-      Crypto Currencies
-      <v-spacer></v-spacer>
-      <v-text-field
-        v-model="search"
-        color="secondary"
-        append-icon="fa-search"
-        label="Search"
-        single-line
-        hide-details
-      ></v-text-field>
+      <v-container fluid>
+        <v-row>
+          <v-col cols="6">Crypto Currencies</v-col>
+          <v-col cols="6">
+            <v-text-field
+              v-model="search"
+              color="secondary"
+              append-icon="fa-search"
+              label="Search"
+              single-line
+              hide-details
+            ></v-text-field>
+          </v-col>
+        </v-row>
+      </v-container>
     </v-card-title>
     <v-data-table
       :dark="getDarkMode"

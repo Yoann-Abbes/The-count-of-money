@@ -79,7 +79,7 @@ export default {
         username: this.accountInformation.name,
         email: this.accountInformation.email,
         password: this.accountInformation.password,
-        picture_url: this.accountInformation.photo,
+        picture_url: this.accountInformation.picture_url,
         keywords: this.favoritesAndKeywords.keywords,
         favorites_crypto: this.favoritesAndKeywords.favoritesSelected
       }
