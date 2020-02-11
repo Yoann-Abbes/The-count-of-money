@@ -31,7 +31,7 @@
         color="secondary"
         required
       ></v-text-field>
-      <v-file-input v-model="photo" label="Photo" color="secondary" prepend-icon="fa-user-circle"></v-file-input>
+      <v-text-field v-model="picture_url" label="Picture url" color="secondary" prepend-icon="fa-user-circle"></v-text-field>
     </v-form>
     <p class="mandatory">* : mandatory field</p>
     <v-card-actions>
@@ -57,7 +57,7 @@ export default {
       email: '',
       password: '',
       passwordConfirmation: '',
-      photo: null,
+      picture_url: '',
       nameRules: [
         v => !!v || 'Name is required',
         v => (v && v.length <= 10) || 'Name must be less than 10 characters'
@@ -81,7 +81,7 @@ export default {
         name: this.name,
         email: this.email,
         password: this.password,
-        photo: this.photo
+        picture_url: this.picture_url
       }
       if (this.$refs.form.validate()) {
         this.$emit('clicked', target)
@@ -92,12 +92,9 @@ export default {
       this.email = ''
       this.password = ''
       this.passwordConfirmation = ''
-      this.photo = null
+      this.picture_url = ''
       this.$emit('cancel', '1')
     }
   }
 }
 </script>
-
-<style scoped>
-</style>

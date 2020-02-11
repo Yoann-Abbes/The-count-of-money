@@ -25,6 +25,7 @@ router.post('/users/register', function (req, res, next) {
     const email = req.body.email,
         password = req.body.password,
         username = req.body.username,
+        picture_url = req.body.picture_url,
         badValues = [null, undefined, ""];
     for (let i = 0; i < badValues.length; i++)
         if ([email, password, username].includes(badValues[i])) {
@@ -44,7 +45,7 @@ router.post('/users/register', function (req, res, next) {
                     })
                     return
                 }
-            let INSERT_USER = `INSERT INTO USERS (email, password, username, is_admin) VALUES ('${email}', '${password}', '${username}', 'false')`
+            let INSERT_USER = `INSERT INTO USERS (email, password, username, is_admin, picture_url) VALUES ('${email}', '${password}', '${username}', 'false', '${picture_url}')`
             client
                 .query(INSERT_USER)
                 .then(result2 => {
