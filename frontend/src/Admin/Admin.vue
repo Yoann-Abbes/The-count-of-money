@@ -12,7 +12,3 @@ export default {
   components: { ManageRSS, ManageCryptocurrency }
 }
 </script>
-
-<style scoped>
-
-</style>
